@@ -25,7 +25,7 @@ namespace CBReader
             DataContext = this;
             FillComicBooks();
 
-            if (ComicBooks.Count <= 0)
+            if (ComicBooks.Count <= 0) 
             {
                 lblSetComicBookFolder.Visibility = Visibility.Visible;
             }
