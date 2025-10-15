@@ -43,13 +43,16 @@ namespace CBReader
         void FillComicBooks()
         {
             ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20));
-            ComicBooks.Add(new ComicBook(1, "Bathman", 25));
+            ComicBooks.Add(new ComicBook(1, "Bathmanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 25));
             ComicBooks.Add(new ComicBook(2, "Spoderman", 177));
         }
 
         // Sets a path to a folder of comic books. Supports a double click in the ListBox, where all the comic books covers' are shown.
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (!string.IsNullOrEmpty(_comicBooksPath))     // doesn't do anything if the path is already set.
+                return;
+
             var dlg = new OpenFolderDialog();
             if (dlg.ShowDialog() != true) return;       // If nothing is selected
 

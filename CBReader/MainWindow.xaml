@@ -4,17 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CBReader"
+        xmlns:controls="clr-namespace:CBReader.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1366" WindowStartupLocation="CenterScreen">
+        Title="CBReader" Height="768" Width="1366" WindowStartupLocation="CenterScreen">
     <Grid>
         <ListBox ItemsSource="{Binding ComicBooks}" Margin="50" MouseDoubleClick="ListBox_MouseDoubleClick">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical" Margin="20">
-                        <TextBlock Text="{Binding Id}"/>
-                        <TextBlock Text="{Binding Title}"/>
-                        <TextBlock Text="{Binding Pages}"/>
-                    </StackPanel>
+                    <controls:ComicBookControl/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
