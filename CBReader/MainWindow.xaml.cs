@@ -1,5 +1,7 @@
 ﻿using CBReader.Model;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +21,7 @@ namespace CBReader
     public partial class MainWindow : Window
     {
         public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();
+        private string _comicBooksPath = "";
         public MainWindow()
         {
             InitializeComponent();
@@ -44,9 +47,15 @@ namespace CBReader
             ComicBooks.Add(new ComicBook(2, "Spoderman", 177));
         }
 
+        // Sets a path to a folder of comic books. Supports a double click in the ListBox, where all the comic books covers' are shown.
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // opens a window where the user sets a folder with comic books
+            var dlg = new OpenFolderDialog();
+            if (dlg.ShowDialog() != true) return;       // If nothing is selected
+
+            _comicBooksPath = dlg.FolderName;
+
+            MessageBox.Show($"Path successfuly set to: {_comicBooksPath}!");
         }
     }
 }
