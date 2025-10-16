@@ -23,8 +23,11 @@ namespace CBReader.View
     public partial class ComicBookView : Window
     {
         private bool _isFullScreen = false;
-        private double _zoom = 0.75;      // defualt value
+        private double _baseHeight;
+        private double _baseWidth;
+        private double _zoom = 1.0;      // defualt value
 
+        // when the value of the zoom changes, the ApplyZoom method is ran (which scales the image)
         public double Zoom
         {
             get {  return _zoom; }
@@ -34,7 +37,7 @@ namespace CBReader.View
                 {
                     _zoom = value;
                     OnPropertyChanged();
-
+                    ApplyZoom();
                 }
             }
         }
@@ -43,6 +46,8 @@ namespace CBReader.View
         public ComicBookView()
         {
             InitializeComponent();
+
+            LoadComicBookResolution();
 
             _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
             _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
@@ -83,6 +88,11 @@ namespace CBReader.View
         #endregion
 
         #region General Methods
+        private void LoadComicBookResolution()
+        {
+            _baseWidth = this.imgSinglePageView.ActualWidth;
+            _baseHeight = this.imgSinglePageView.ActualHeight;
+        }
         private void ToggleFullScreen()
         {
             if (!_isFullScreen)
@@ -100,14 +110,22 @@ namespace CBReader.View
                 _isFullScreen = false;
             }
         }
+
+        private void ApplyZoom()
+        {
+            imgScale.ScaleX = Zoom;
+            imgScale.ScaleY = Zoom;
+        }
         private void ZoomIN_Click(object sender, RoutedEventArgs e)
         {
-            Zoom += 0.10;
+            Zoom += 0.25;
+            if (Zoom > 3) Zoom = 3; // prevents going above 3x zoom
         }
 
         private void ZoomOUT_Click(object sender, RoutedEventArgs e)
         {
-            Zoom -= 0.10;
+            Zoom -= 0.25;
+            if (Zoom < 0.25) Zoom = 0.25;       // prevents going below 0
         }
         #endregion
 

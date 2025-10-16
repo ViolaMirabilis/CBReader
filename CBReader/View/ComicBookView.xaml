@@ -12,14 +12,21 @@
         MouseMove="Window_MouseMove"
         PreviewKeyDown="Window_PreviewKeyDown">
     <Grid>
-        <Grid x:Name="ComicBookViewGrid">
-            <ScrollViewer>
+        <Grid x:Name="ComicBookViewGrid" HorizontalAlignment="Center">
+            <ScrollViewer HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          VerticalAlignment="Center" HorizontalAlignment="Center">
                 <!-- Gotta make a separate "two page view-->
                 <Image x:Name="imgSinglePageView"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                        Height="auto"
                        Width="auto"
                        Stretch="UniformToFill"
-                        Source="C:\Users\zajac\Desktop\tmpComicBook\left.jpg"/>
+                       Source="C:\Users\zajac\Desktop\tmpComicBook\left.jpg">
+                    <Image.RenderTransform>
+                        <ScaleTransform x:Name="imgScale" ScaleX="1" ScaleY="1"/>
+                    </Image.RenderTransform>
+                </Image>
             </ScrollViewer>
             
         </Grid>
