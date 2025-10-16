@@ -9,19 +9,27 @@
         Title="CBReader Viewer"
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
-        MouseMove="Window_MouseMove">
-    <Grid >
+        MouseMove="Window_MouseMove"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <Grid>
         <Grid x:Name="ComicBookViewGrid">
-            <Image x:Name="imgComicBookImageView" Height="auto" Width="auto" Stretch="None">
-                
-            </Image>
+            <ScrollViewer>
+                <!-- Gotta make a separate "two page view-->
+                <Image x:Name="imgSinglePageView"
+                       Height="auto"
+                       Width="auto"
+                       Stretch="UniformToFill"
+                        Source="C:\Users\zajac\Desktop\tmpComicBook\left.jpg"/>
+            </ScrollViewer>
+            
         </Grid>
 
         <Grid x:Name="OverlapGUIGrid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Button Content="One Page View" Height="50" Width="50" Margin="5"/>
-                <Button Content="Two Page View" Height="50" Width="50" Margin="5"/>
-                <Button Content="One Page View" Height="50" Width="50" Margin="5"/>
+                <Button Content="One Page View" Height="50" Width="100" Margin="5"/>
+                <Button Content="Two Page View" Height="50" Width="100" Margin="5"/>
+                <Button Content="Zoom IN" Height="50" Width="100" Margin="5" Click="ZoomIN_Click"/>
+                <Button Content="Zoom OUT" Height="50" Width="100" Margin="5" Click="ZoomOUT_Click"/>
             </StackPanel>
             
         </Grid>
