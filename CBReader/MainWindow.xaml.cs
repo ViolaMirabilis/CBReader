@@ -1,4 +1,5 @@
 ﻿using CBReader.Model;
+using CBReader.View;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -42,7 +43,7 @@ namespace CBReader
         
         void FillComicBooks()
         {
-            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            /*ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
             ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
             ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
             ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
@@ -51,7 +52,7 @@ namespace CBReader
             ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
             ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
             ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
-            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
+            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));*/
 
         }
 
@@ -67,6 +68,9 @@ namespace CBReader
             _comicBooksPath = dlg.FolderName;
 
             MessageBox.Show($"Path successfuly set to: {_comicBooksPath}!");
+
+            var window = new ComicBookView();
+            window.ShowDialog();
         }
     }
 }

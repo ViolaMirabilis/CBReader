@@ -12,7 +12,30 @@
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <ListBox ItemsSource="{Binding ComicBooks}" Margin="50" Height="auto" Width="auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" FontSize="14" Background="White"> 
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Import a new comic book"/>
+            </MenuItem>
+            
+            <MenuItem Header="View">
+                <MenuItem Header="Show favourites" IsCheckable="True"/>
+            </MenuItem>
+            
+            <MenuItem Header="Settings">
+                <MenuItem Header="Full screen" IsCheckable="True"/>
+            </MenuItem>
+
+            <MenuItem Header="About"/>
+        </Menu>
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding ComicBooks}" Margin="50" Height="auto" Width="auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
           ScrollViewer.VerticalScrollBarVisibility="Hidden"     
           MouseDoubleClick="ListBox_MouseDoubleClick">
             <ListBox.ItemsPanel>
@@ -28,6 +51,6 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <Label x:Name="lblSetComicBookFolder" Content="Double click to set a folder with comic book resources..." FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.50"/>
+        <Label Grid.Row="1" x:Name="lblSetComicBookFolder" Content="Double click to set a folder with comic book resources..." FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.50"/>
     </Grid>
 </Window>
