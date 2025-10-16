@@ -42,9 +42,17 @@ namespace CBReader
         
         void FillComicBooks()
         {
-            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20));
-            ComicBooks.Add(new ComicBook(1, "Bathmanaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 25));
-            ComicBooks.Add(new ComicBook(2, "Spoderman", 177));
+            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
+            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
+            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
+            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
+            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
+            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
+
         }
 
         // Sets a path to a folder of comic books. Supports a double click in the ListBox, where all the comic books covers' are shown.

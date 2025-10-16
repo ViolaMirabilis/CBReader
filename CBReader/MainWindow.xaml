@@ -5,16 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CBReader"
         xmlns:controls="clr-namespace:CBReader.Controls"
+        xmlns:converters="clr-namespace:CBReader.Converters"
         mc:Ignorable="d"
-        Title="CBReader" Height="768" Width="1366" WindowStartupLocation="CenterScreen">
+        Title="CBReader Library"
+        Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
+        Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
+        WindowStartupLocation="CenterScreen">
     <Grid>
-        <ListBox ItemsSource="{Binding ComicBooks}" Margin="50" MouseDoubleClick="ListBox_MouseDoubleClick">
+        <ListBox ItemsSource="{Binding ComicBooks}" Margin="50" Height="auto" Width="auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+          ScrollViewer.VerticalScrollBarVisibility="Hidden"     
+          MouseDoubleClick="ListBox_MouseDoubleClick">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal"/>
+                    <WrapPanel/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <controls:ComicBookControl/>
