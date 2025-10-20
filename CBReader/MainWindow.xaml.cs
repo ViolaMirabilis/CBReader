@@ -1,8 +1,12 @@
 ﻿using CBReader.Model;
 using CBReader.View;
 using Microsoft.Win32;
+using SharpCompress.Common;
+using SharpCompress.Readers;
+using SharpCompress.Writers;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,7 +54,8 @@ namespace CBReader
         }
 
         // Sets a path to a folder of comic books. Supports a double click in the ListBox, where all the comic books covers' are shown.
-        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        // REDO LATER ON!
+        /*private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (!string.IsNullOrEmpty(_comicBooksPath))     // doesn't do anything if the path is already set.
                 return;
@@ -64,6 +69,22 @@ namespace CBReader
 
             var window = new ComicBookView();
             window.ShowDialog();
+        } */
+
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;        // Casting sender to ListBox type. (ListBox)sender is the same, except this one throws an exception. The first one checks for null.
+            if (listBox == null) return;
+
+            var selectedItem = listBox.SelectedItem as ComicBook;   // Casting the selected item to a ComicBook item, otherwise it would be a ListBox item. Needed to access ComicBook properties.
+
+            if (selectedItem != null)
+            {
+                var comicBookView = new ComicBookView();
+                comicBookView.LoadComicBookFromArchive(selectedItem.ArchivePath);       // Runs the method from ComicBookView, which takes the path as an argument
+
+                comicBookView.Show();
+            }
         }
     }
 }
