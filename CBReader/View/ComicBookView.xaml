@@ -12,25 +12,27 @@
         MouseMove="Window_MouseMove"
         PreviewKeyDown="Window_PreviewKeyDown">
     <Grid>
-        <Grid x:Name="ComicBookViewGrid" HorizontalAlignment="Center">
-            <ScrollViewer HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                          VerticalAlignment="Center" HorizontalAlignment="Center">
+        <ScrollViewer x:Name="ComicBookScrollViewer" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                          VerticalAlignment="Center" HorizontalAlignment="Center" VerticalScrollBarVisibility="Hidden">
                 <!-- Gotta make a separate "two page view-->
-                <Image x:Name="imgSinglePageView"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Height="auto"
-                       Width="auto"
-                       Stretch="UniformToFill"
-                       Source="C:\Users\zajac\Desktop\tmpComicBook\left.jpg">
-                    <Image.RenderTransform>
-                        <ScaleTransform x:Name="imgScale" ScaleX="1" ScaleY="1"/>
-                    </Image.RenderTransform>
-                </Image>
-            </ScrollViewer>
-            
-        </Grid>
+            <Grid x:Name="ContentGrid">
+                <Grid.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding CurrentZoom}" ScaleY="{Binding CurrentZoom}"/>
+                </Grid.LayoutTransform>
 
+                <Image x:Name="imgSinglePageView"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Height="auto"
+                        Width="auto"
+                        Stretch="None">
+                </Image>
+            </Grid>
+            
+        </ScrollViewer>
+            
+
+        <!-- Buttons that overlap the comic book -->
         <Grid x:Name="OverlapGUIGrid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                 <Button Content="One Page View" Height="50" Width="100" Margin="5"/>

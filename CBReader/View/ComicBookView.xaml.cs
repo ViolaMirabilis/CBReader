@@ -32,27 +32,24 @@ namespace CBReader.View
         private bool _isFullScreen = false;
         private double _baseHeight;
         private double _baseWidth;
-        private double _zoom = 1.0;      // Defualt value
-
-        // When the value of the zoom changes, the ApplyZoom method is ran (which scales the image)
-        public double Zoom
+        private double _currentZoom = 0.50;
+        public double CurrentZoom
         {
-            get {  return _zoom; }
+            get { return _currentZoom; }
             set
             {
-                if (_zoom != value)
-                {
-                    _zoom = value;
-                    OnPropertyChanged();
-                    ApplyZoom();
-                }
+                _currentZoom = value;
+                OnPropertyChanged();
             }
         }
+        private const double _zoomScale = 0.10;
 
         private readonly DispatcherTimer _mouseHoverDelay;
         public ComicBookView()
         {
             InitializeComponent();
+
+            DataContext = this; // so the CurrentZoom is loaded initially
 
             LoadComicBookResolution();
 
@@ -118,22 +115,41 @@ namespace CBReader.View
             }
         }
 
-        private void ApplyZoom()
-        {
-            imgScale.ScaleX = Zoom;
-            imgScale.ScaleY = Zoom;
-        }
         private void ZoomIN_Click(object sender, RoutedEventArgs e)
         {
-            Zoom += 0.25;
-            if (Zoom > 3) Zoom = 3; // prevents going above 3x zoom
+            _currentZoom += _zoomScale;
+
+            if (_currentZoom >= 3.0)
+                _currentZoom = 3.0; // so it doesnt go below that.*/
+
+            ScaleTransform transform = ContentGrid.LayoutTransform as ScaleTransform;
+            if (transform == null)
+            {
+                transform = new ScaleTransform(1, 1);
+                ContentGrid.LayoutTransform = transform;
+            }
+
+            transform.ScaleX = _currentZoom;
+            transform.ScaleY = _currentZoom;
         }
 
         private void ZoomOUT_Click(object sender, RoutedEventArgs e)
         {
-            Zoom -= 0.25;
-            if (Zoom < 0.25) Zoom = 0.25;       // prevents going below 0
-        }
+            _currentZoom -= _zoomScale;
+
+            if (_currentZoom <= 0.10)
+                _currentZoom = 0.10; // so it doesnt go below that.
+
+            ScaleTransform transform = ContentGrid.LayoutTransform as ScaleTransform;
+            if (transform == null)
+            {
+                transform = new ScaleTransform(1, 1);
+                ContentGrid.LayoutTransform = transform;
+            }
+
+            transform.ScaleX = _currentZoom;
+            transform.ScaleY = _currentZoom;
+            }
         #endregion
 
 
