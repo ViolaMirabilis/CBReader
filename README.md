@@ -2,7 +2,7 @@
 **A Comic Reader which supports popualr comic books extensions, including:**
 - .cbr,
 - .cbz,
-- .pdf,
+- .pdf (to be done),
 - .rar,
 - .7z,
 - and possibly more*
