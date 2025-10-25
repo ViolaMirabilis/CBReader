@@ -1,5 +1,11 @@
 # CBReader
-**A Comic Reader which supports popualr comic books extensions, including: .cbr, .cbz, .pdf, .rar, .7z (and possibly more).**
+**A Comic Reader which supports popualr comic books extensions, including:
+- .cbr,
+- .cbz,
+- .pdf,
+- .rar,
+- .7z,
+- and possibly more*.**
 ## Current features
 * A repository with all the comic books listed in one view,
 * opening comic books that scale well with the screen,
