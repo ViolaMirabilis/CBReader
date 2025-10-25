@@ -47,7 +47,7 @@ namespace CBReader
         
         void FillComicBooks()
         {
-            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg"));
+            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg", true));
             ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
             ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
 

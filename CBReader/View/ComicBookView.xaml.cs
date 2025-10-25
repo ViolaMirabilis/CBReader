@@ -22,7 +22,7 @@ namespace CBReader.View
     /// <summary>
     /// Interaction logic for ComicBookView.xaml
     /// </summary>
-    public partial class ComicBookView : Window
+    public partial class ComicBookView : Window, INotifyPropertyChanged
     {
         // Reading and navigation through a comic book
         private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
@@ -187,6 +187,7 @@ namespace CBReader.View
 
         #endregion
 
+        // This should be separated to views and view models. Then, a view model should inherit from ViewModelBase
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)     // CallerMemberName so the method can be called without property's name
         {

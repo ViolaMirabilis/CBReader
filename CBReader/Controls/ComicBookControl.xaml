@@ -6,13 +6,21 @@
              xmlns:local="clr-namespace:CBReader.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="150">
+
     <Grid>
         <Grid>
             <StackPanel Orientation="Vertical" Margin="5" Height="200"  Width="150">
                 <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" FontSize="16" FontFamily="Bahnschrift" TextWrapping="WrapWithOverflow"/>
 
-                <Image Height="128" Width="91" Margin="2" Source="{Binding CoverPath}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased">
-                </Image>
+                <Grid>
+                    <Image Height="128" Width="91" Margin="2" Source="{Binding CoverPath}" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                    <Image x:Name="imgFavourite" Height="24" Width="24"  Margin="0,0,35,10" Source="C:\Users\zajac\Desktop\CBReader\CBReader\Assets\star.png"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom"
+                           Visibility="{Binding IsFavourite, Converter={StaticResource BoolToVis}}"/>
+                </Grid>
+                
 
                 <TextBlock Text="{Binding Pages}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" FontSize="16" FontFamily="Bahnschrift" TextWrapping="WrapWithOverflow"/>
             </StackPanel>

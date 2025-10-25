@@ -11,6 +11,8 @@
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
         WindowStartupLocation="CenterScreen">
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -44,6 +46,7 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
 
+            <!-- so it stores CONTROLS as content of the listBox-->
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <controls:ComicBookControl/>
