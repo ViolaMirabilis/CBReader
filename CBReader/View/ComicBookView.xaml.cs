@@ -80,6 +80,16 @@ namespace CBReader.View
             {
                 ToggleFullScreen();
             }
+            if (e.Key == Key.Right)
+            {
+                // cannot go over
+                NextPage();
+            }
+            if (e.Key == Key.Left)
+            {
+                // cannot go below
+                PreviousPage();
+            }
         }
         #endregion
 
@@ -115,7 +125,22 @@ namespace CBReader.View
             }
         }
 
-        private void ZoomIN_Click(object sender, RoutedEventArgs e)
+        private void PreviousPage()
+        {
+            if (_currentPage <= 0) return;
+            _currentPage--;
+            imgSinglePageView.Source = _comicBookPages[_currentPage];
+
+        }
+
+        private void NextPage()
+        {
+            if (_currentPage >= _comicBookPages.Count) return;
+            _currentPage++;
+            imgSinglePageView.Source = _comicBookPages[_currentPage];
+        }
+
+        private void ZoomIn()
         {
             _currentZoom += _zoomScale;
 
@@ -132,8 +157,7 @@ namespace CBReader.View
             transform.ScaleX = _currentZoom;
             transform.ScaleY = _currentZoom;
         }
-
-        private void ZoomOUT_Click(object sender, RoutedEventArgs e)
+        private void ZoomOut()
         {
             _currentZoom -= _zoomScale;
 
@@ -149,7 +173,18 @@ namespace CBReader.View
 
             transform.ScaleX = _currentZoom;
             transform.ScaleY = _currentZoom;
-            }
+            
+        }
+
+        private void ZoomIN_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomIn();
+        }
+
+        private void ZoomOUT_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomOut();
+        }
         #endregion
 
 
