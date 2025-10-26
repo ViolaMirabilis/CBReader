@@ -27,6 +27,7 @@ namespace CBReader.View
         // Reading and navigation through a comic book
         private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
         private int _currentPage = 0;
+        private bool _isDoublePage = false;
 
         // Window & Zoom properties
         private bool _isFullScreen = false;
@@ -104,8 +105,8 @@ namespace CBReader.View
         #region General Methods
         private void LoadComicBookResolution()
         {
-            _baseWidth = this.imgSinglePageView.ActualWidth;
-            _baseHeight = this.imgSinglePageView.ActualHeight;
+            _baseWidth = this.imgSingle.ActualWidth;
+            _baseHeight = this.imgSingle.ActualHeight;
         }
         private void ToggleFullScreen()
         {
@@ -127,17 +128,24 @@ namespace CBReader.View
 
         private void PreviousPage()
         {
+            if (!_isDoublePage) return;
+            //  TO DO
             if (_currentPage <= 0) return;
             _currentPage--;
-            imgSinglePageView.Source = _comicBookPages[_currentPage];
+            imgSingle.Source = _comicBookPages[_currentPage];
+            imgDouble.Source = _comicBookPages[_currentPage - 1];
 
         }
 
         private void NextPage()
         {
+            if (!_isDoublePage) return;
+            // TO DO
+
             if (_currentPage >= _comicBookPages.Count) return;
             _currentPage++;
-            imgSinglePageView.Source = _comicBookPages[_currentPage];
+            imgSingle.Source = _comicBookPages[_currentPage];
+            imgDouble.Source = _comicBookPages[_currentPage + 1];
         }
 
         private void ZoomIn()
@@ -231,7 +239,7 @@ namespace CBReader.View
 
             if (_comicBookPages.Count > 0)
             {
-                imgSinglePageView.Source = _comicBookPages[_currentPage];
+                imgSingle.Source = _comicBookPages[_currentPage];
             }
 
         }
@@ -245,6 +253,10 @@ namespace CBReader.View
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
         }
 
-        
+        private void btnDoublePage_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_isDoublePage) _isDoublePage = true;
+
+        }
     }
 }

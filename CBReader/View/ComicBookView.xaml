@@ -20,13 +20,29 @@
                     <ScaleTransform ScaleX="{Binding CurrentZoom}" ScaleY="{Binding CurrentZoom}"/>
                 </Grid.LayoutTransform>
 
-                <Image x:Name="imgSinglePageView"
+                <StackPanel x:Name="ComicPageView"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+
+                    <Image x:Name="imgSingle"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Height="auto"
                         Width="auto"
                         Stretch="None">
-                </Image>
+                    </Image>
+                    <Image x:Name="imgDouble"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Height="auto"
+                        Width="auto"
+                        Stretch="None">
+
+                    </Image>
+                </StackPanel>
+                
             </Grid>
             
         </ScrollViewer>
@@ -35,8 +51,8 @@
         <!-- Buttons that overlap the comic book -->
         <Grid x:Name="OverlapGUIGrid">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Button Content="One Page View" Height="50" Width="100" Margin="5"/>
-                <Button Content="Two Page View" Height="50" Width="100" Margin="5"/>
+                <Button Content="1x Page View" Height="50" Width="100" Margin="5"/>
+                <Button x:Name="btnDoublePage" Content="2x Page View" Height="50" Width="100" Margin="5" Click="btnDoublePage_Click"/>
                 <Button Content="Zoom IN" Height="50" Width="100" Margin="5" Click="ZoomIN_Click"/>
                 <Button Content="Zoom OUT" Height="50" Width="100" Margin="5" Click="ZoomOUT_Click"/>
             </StackPanel>
