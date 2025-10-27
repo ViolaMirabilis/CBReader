@@ -38,7 +38,8 @@
                         VerticalAlignment="Center"
                         Height="auto"
                         Width="auto"
-                        Stretch="None">
+                        Stretch="None"
+                        Visibility="{Binding IsDoublePage, Converter={StaticResource BoolToVis}}">
 
                     </Image>
                 </StackPanel>

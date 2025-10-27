@@ -28,6 +28,15 @@ namespace CBReader.View
         private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
         private int _currentPage = 0;
         private bool _isDoublePage = false;
+        public bool IsDoublePage
+        {
+            get { return _isDoublePage; }
+            set
+            {
+                _isDoublePage = value;
+                OnPropertyChanged();
+            }
+        }
 
         // Window & Zoom properties
         private bool _isFullScreen = false;
