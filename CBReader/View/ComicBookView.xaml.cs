@@ -61,8 +61,6 @@ namespace CBReader.View
 
             DataContext = this; // so the CurrentZoom is loaded initially
 
-            LoadComicBookResolution();
-
             _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
             _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
             _mouseHoverDelay.Tick += MouseHoverDelay_Tick;                  // ticks 
@@ -112,11 +110,6 @@ namespace CBReader.View
         #endregion
 
         #region General Methods
-        private void LoadComicBookResolution()
-        {
-            _baseWidth = this.imgSingle.ActualWidth;
-            _baseHeight = this.imgSingle.ActualHeight;
-        }
         private void ToggleFullScreen()
         {
             if (!_isFullScreen)
@@ -148,7 +141,7 @@ namespace CBReader.View
 
         private void NextPage()
         {
-            if (!_isDoublePage) return;
+            //if (!_isDoublePage) return;
             // TO DO
 
             if (_currentPage >= _comicBookPages.Count) return;
@@ -264,7 +257,7 @@ namespace CBReader.View
 
         private void btnDoublePage_Click(object sender, RoutedEventArgs e)
         {
-            if (!_isDoublePage) _isDoublePage = true;
+            IsDoublePage = true;
 
         }
     }

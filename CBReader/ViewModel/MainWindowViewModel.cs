@@ -1,5 +1,5 @@
 ﻿namespace CBReader.ViewModel;
 
-public class ComicLibraryViewModel
+public class MainWindowViewModel
 {
 }
