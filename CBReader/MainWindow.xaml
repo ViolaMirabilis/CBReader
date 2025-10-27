@@ -44,7 +44,7 @@
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"     
                  MouseDoubleClick="ListBox_MouseDoubleClick">
-            
+              
             <!-- Stores the content in a Wrap Panel -->
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
