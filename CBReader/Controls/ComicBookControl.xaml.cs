@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CBReader.Model;
 
 namespace CBReader.Controls
 {
@@ -20,9 +21,30 @@ namespace CBReader.Controls
     /// </summary>
     public partial class ComicBookControl : UserControl
     {
+        private bool _toggleTextDelay = false;
         public ComicBookControl()
         {
             InitializeComponent();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _toggleTextDelay = true;
+            
+        }
+
+        // when the context menu CLOSES, do this.
+        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            // MenuItem makes _toggle TRUE. Then, when the context menu is closed, it checks if it's true. If it is, it changes the text.
+            if (_toggleTextDelay && DataContext is ComicBook comicBook)
+            {
+                comicBook.IsFavourite = !comicBook.IsFavourite;
+
+                FavouriteButton.Header = comicBook.IsFavourite ? "Remove from favourites" : "Add to favourites";
+            }
+
+            _toggleTextDelay = false;
         }
     }
 }

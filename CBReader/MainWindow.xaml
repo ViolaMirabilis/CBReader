@@ -12,7 +12,6 @@
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
         WindowStartupLocation="CenterScreen">
 
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -37,9 +36,16 @@
             <MenuItem Header="About"/>
         </Menu>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding ComicBooks}" Margin="50" Height="auto" Width="auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-          ScrollViewer.VerticalScrollBarVisibility="Hidden"     
-          MouseDoubleClick="ListBox_MouseDoubleClick">
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding ComicBooks}"
+                 Margin="50"
+                 Height="auto"
+                 Width="auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 ScrollViewer.VerticalScrollBarVisibility="Hidden"     
+                 MouseDoubleClick="ListBox_MouseDoubleClick">
+            
+            <!-- Stores the content in a Wrap Panel -->
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel/>

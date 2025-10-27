@@ -15,6 +15,7 @@
   <ItemGroup>
     <Folder Include="Assets\" />
     <Folder Include="Thumbnails\" />
+    <Folder Include="Thumbnails\" />
   </ItemGroup>
 
 </Project>
