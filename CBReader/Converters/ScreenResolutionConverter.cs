@@ -8,14 +8,14 @@ namespace CBReader.Converters;
 public class ScreenResolutionConverter : MarkupExtension, IValueConverter
 {
     /// <summary>
-    /// Used in MainWindow.xaml. Used to always fit the users' screen, no matter the resolution. The resolution is scalled accordingly with the Parameter value, e.g. 1920 x 0.9 = 1728, 1080 * 0,9 = 972.
+    /// Used in MainWindow.xaml. Used to always fit t othe users' screen, no matter the resolution. The resolution is scalled accordingly with the Parameter value provided in the MainWindowView, e.g. 1920 x 0.9 = 1728, 1080 * 0,9 = 972.
     /// The way it's implemented in the main window is that the program takes users' current screen resolution and converts it by x and y.
     /// @ see more at: https://stackoverflow.com/questions/8121906/resize-wpf-window-and-contents-depening-on-screen-resolution    
     /// </summary>
 
 
     private static ScreenResolutionConverter? _instance;
-    public ScreenResolutionConverter() { }      // parameterless constructor. It can be deleted, though
+    public ScreenResolutionConverter() { }      // parameterless constructor. Optional cuz auto generated anyway
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         double size = System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter, CultureInfo.InvariantCulture);

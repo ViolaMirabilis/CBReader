@@ -77,6 +77,5 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }
-
     #endregion
 }

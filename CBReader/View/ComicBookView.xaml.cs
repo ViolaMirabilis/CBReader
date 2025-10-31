@@ -40,8 +40,6 @@ namespace CBReader.View
 
         // Window & Zoom properties
         private bool _isFullScreen = false;
-        private double _baseHeight;
-        private double _baseWidth;
         private double _currentZoom = 0.50;
         public double CurrentZoom
         {

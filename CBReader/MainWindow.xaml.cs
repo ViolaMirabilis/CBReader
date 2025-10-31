@@ -30,14 +30,13 @@ namespace CBReader
         {
             InitializeComponent();
             DataContext = new MainWindowViewModel();
-
         }
 
         // integrated with MainWindowViewModel
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;        // casts the sender to ListBox
-            var selectedItem = listBox.SelectedItem as ComicBook;   // casts the selected item as ComicBook
+            var selectedItem = listBox?.SelectedItem as ComicBook;   // casts the selected item as ComicBook
             if (DataContext is MainWindowViewModel vm && selectedItem != null)
             {
                 vm.ShowComicBookCommand.Execute(selectedItem);
