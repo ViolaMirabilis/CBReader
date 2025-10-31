@@ -1,5 +1,6 @@
 ﻿using CBReader.Model;
 using CBReader.View;
+using CBReader.ViewModel;
 using Microsoft.Win32;
 using SharpCompress.Common;
 using SharpCompress.Readers;
@@ -25,65 +26,21 @@ namespace CBReader
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();
-        private string _comicBooksPath = "";
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            FillComicBooks();
-
-            if (ComicBooks.Count <= 0) 
-            {
-                lblSetComicBookFolder.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                lblSetComicBookFolder.Visibility = Visibility.Collapsed;
-            }
+            DataContext = new MainWindowViewModel();
 
         }
 
-        
-        void FillComicBooks()
-        {
-            ComicBooks.Add(new ComicBook(0, "The Walking Dead", 20, @"C:\Users\zajac\Desktop\test.jpg", true));
-            ComicBooks.Add(new ComicBook(1, "Batman", 25, @"C:\Users\zajac\Desktop\Batman.png"));
-            ComicBooks.Add(new ComicBook(2, "Spiderman", 25, @"C:\Users\zajac\Desktop\Spiderman.png"));
-
-        }
-
-        // Sets a path to a folder of comic books. Supports a double click in the ListBox, where all the comic books covers' are shown.
-        // REDO LATER ON!
-        /*private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(_comicBooksPath))     // doesn't do anything if the path is already set.
-                return;
-
-            var dlg = new OpenFolderDialog();
-            if (dlg.ShowDialog() != true) return;       // If nothing is selected
-
-            _comicBooksPath = dlg.FolderName;
-
-            MessageBox.Show($"Path successfuly set to: {_comicBooksPath}!");
-
-            var window = new ComicBookView();
-            window.ShowDialog();
-        } */
-
+        // integrated with MainWindowViewModel
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var listBox = sender as ListBox;        // Casting sender to ListBox type. (ListBox)sender is the same, except this one throws an exception. The first one checks for null.
-            if (listBox == null) return;
-
-            var selectedItem = listBox.SelectedItem as ComicBook;   // Casting the selected item to a ComicBook item, otherwise it would be a ListBox item. Needed to access ComicBook properties.
-
-            if (selectedItem != null)
+            var listBox = sender as ListBox;        // casts the sender to ListBox
+            var selectedItem = listBox.SelectedItem as ComicBook;   // casts the selected item as ComicBook
+            if (DataContext is MainWindowViewModel vm && selectedItem != null)
             {
-                var comicBookView = new ComicBookView();
-                comicBookView.LoadComicBookFromArchive(selectedItem.ArchivePath);       // Runs the method from ComicBookView, which takes the path as an argument
-
-                comicBookView.Show();
+                vm.ShowComicBookCommand.Execute(selectedItem);
             }
         }
 
