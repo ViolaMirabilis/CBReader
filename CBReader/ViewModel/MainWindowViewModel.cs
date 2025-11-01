@@ -14,7 +14,6 @@ namespace CBReader.ViewModel;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();
-    private readonly string _comicBooksPath = "";        // temporary
     private bool _showEmptyComicBookListLabel;  // responsible for showing
     public bool ShowEmptyComicBookListLabel
     {
@@ -49,12 +48,19 @@ public class MainWindowViewModel : INotifyPropertyChanged
         return obj is ComicBook;
     }
 
+    // REDO THIS INTO FACTORY/SERVICE LATER!
     private void OpenComicBook(object obj)
     {
         if (obj is ComicBook comic)
         {
-            ComicBookView comicBookView = new ComicBookView();
-            comicBookView.LoadComicBookFromArchive(comic.ArchivePath);
+            var vm = new ComicBookViewModel();
+            vm.LoadComicBookFromArchive(comic.ArchivePath);
+
+            ComicBookView comicBookView = new ComicBookView
+            {
+                DataContext = vm
+            };
+
             comicBookView.Show();
         }
     }
@@ -73,7 +79,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     #region INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)     // CallerMemberName so the method can be called without property's name
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)     // CallerMemberName so the method can be called without property's name
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }

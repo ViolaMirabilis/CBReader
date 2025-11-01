@@ -16,6 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using CBReader.Model;
+using CBReader.ViewModel;
 
 namespace CBReader.View
 {
@@ -24,40 +26,17 @@ namespace CBReader.View
     /// </summary>
     public partial class ComicBookView : Window, INotifyPropertyChanged
     {
-        // Reading and navigation through a comic book
-        private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
-        private int _currentPage = 0;
-        private bool _isDoublePage = false;
-        public bool IsDoublePage
-        {
-            get { return _isDoublePage; }
-            set
-            {
-                _isDoublePage = value;
-                OnPropertyChanged();
-            }
-        }
 
-        // Window & Zoom properties
         private bool _isFullScreen = false;
-        private double _currentZoom = 0.50;
-        public double CurrentZoom
-        {
-            get { return _currentZoom; }
-            set
-            {
-                _currentZoom = value;
-                OnPropertyChanged();
-            }
-        }
-        private const double _zoomScale = 0.10;
-
         private readonly DispatcherTimer _mouseHoverDelay;
         public ComicBookView()
         {
             InitializeComponent();
+            DataContext = new ComicBookViewModel(); // so the CurrentZoom is loaded initially
+            ContentGrid.Focusable = true;
+            ContentGrid.Focus();
 
-            DataContext = this; // so the CurrentZoom is loaded initially
+
 
             _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
             _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
@@ -79,22 +58,24 @@ namespace CBReader.View
             _mouseHoverDelay.Stop();
             _mouseHoverDelay.Start();
         }
-
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F11)
             {
                 ToggleFullScreen();
             }
-            if (e.Key == Key.Right)
+            if (DataContext is ComicBookViewModel vm)
             {
-                // cannot go over
-                NextPage();
-            }
-            if (e.Key == Key.Left)
-            {
-                // cannot go below
-                PreviousPage();
+                if (e.Key == Key.Right && vm.GoNextPageCommand.CanExecute(null))      // we just want keyboard clicks, no values, so "null" fits here perfectly. If we wanted to pass a value, CommandParameter would be needed.
+                {
+                    vm.GoNextPageCommand.Execute(null);
+                    e.Handled = true;
+                }
+                else if (e.Key == Key.Left && vm.GoPreviousPageCommand.CanExecute(null))
+                {
+                    vm.GoPreviousPageCommand.Execute(null);
+                    e.Handled = true;
+                }
             }
         }
         #endregion
@@ -107,7 +88,6 @@ namespace CBReader.View
         }
         #endregion
 
-        #region General Methods
         private void ToggleFullScreen()
         {
             if (!_isFullScreen)
@@ -126,137 +106,24 @@ namespace CBReader.View
             }
         }
 
-        private void PreviousPage()
-        {
-            if (!_isDoublePage) return;
-            //  TO DO
-            if (_currentPage <= 0) return;
-            _currentPage--;
-            imgSingle.Source = _comicBookPages[_currentPage];
-            imgDouble.Source = _comicBookPages[_currentPage - 1];
-
-        }
-
-        private void NextPage()
-        {
-            //if (!_isDoublePage) return;
-            // TO DO
-
-            if (_currentPage >= _comicBookPages.Count) return;
-            _currentPage++;
-            imgSingle.Source = _comicBookPages[_currentPage];
-            imgDouble.Source = _comicBookPages[_currentPage + 1];
-        }
-
-        private void ZoomIn()
-        {
-            _currentZoom += _zoomScale;
-
-            if (_currentZoom >= 3.0)
-                _currentZoom = 3.0; // so it doesnt go below that.*/
-
-            ScaleTransform transform = ContentGrid.LayoutTransform as ScaleTransform;
-            if (transform == null)
-            {
-                transform = new ScaleTransform(1, 1);
-                ContentGrid.LayoutTransform = transform;
-            }
-
-            transform.ScaleX = _currentZoom;
-            transform.ScaleY = _currentZoom;
-        }
-        private void ZoomOut()
-        {
-            _currentZoom -= _zoomScale;
-
-            if (_currentZoom <= 0.10)
-                _currentZoom = 0.10; // so it doesnt go below that.
-
-            ScaleTransform transform = ContentGrid.LayoutTransform as ScaleTransform;
-            if (transform == null)
-            {
-                transform = new ScaleTransform(1, 1);
-                ContentGrid.LayoutTransform = transform;
-            }
-
-            transform.ScaleX = _currentZoom;
-            transform.ScaleY = _currentZoom;
-            
-        }
-
-        private void ZoomIN_Click(object sender, RoutedEventArgs e)
-        {
-            ZoomIn();
-        }
-
-        private void ZoomOUT_Click(object sender, RoutedEventArgs e)
-        {
-            ZoomOut();
-        }
-        #endregion
-
-
-        #region Reading comic book from the archive
-        // Should be async with a "loading" animation
-        public void LoadComicBookFromArchive(string path)
-        {
-            _comicBookPages.Clear();
-
-            // @See https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
-            using (Stream stream = File.OpenRead(path))
-            using (var reader = ReaderFactory.Open(stream))
-            {
-                while (reader.MoveToNextEntry())        // Goes into the all the files
-                {
-                    if (!reader.Entry.IsDirectory)      // If the file isn't a folder, it runs the code below.
-                    {
-                        using (var entryStream = reader.OpenEntryStream())
-                        {
-                            // Cannot use StreamReader, as it reads raw bytes (not suitable for images)
-                            // @See https://stackoverflow.com/questions/5346727/convert-memory-stream-to-bitmapimage
-                            byte[] data;        // The image data needs to be in an array first
-                            using (var ms = new MemoryStream())
-                            {
-                                entryStream.CopyTo(ms);     // Reads from one stream, writes to another (ms)
-                                data = ms.ToArray();        // then the data array gets the memory stream
-                            }
-
-                            var bitmap = new BitmapImage();
-                            using (var ms2 = new MemoryStream(data))
-                            {
-                                bitmap.BeginInit();
-                                bitmap.CacheOption = BitmapCacheOption.OnLoad;        // Important
-                                bitmap.StreamSource = ms2;
-                                bitmap.EndInit();
-                                bitmap.Freeze();
-                            }
-
-                            _comicBookPages.Add(bitmap);     // Adds the converted bytes to the list of Bitmaps
-                        }
-                    }
-                }
-            }
-
-            if (_comicBookPages.Count > 0)
-            {
-                imgSingle.Source = _comicBookPages[_currentPage];
-            }
-
-        }
-
-        #endregion
-
         // This should be separated to views and view models. Then, a view model should inherit from ViewModelBase
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)     // CallerMemberName so the method can be called without property's name
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)     // CallerMemberName so the method can be called without property's name
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
         }
 
-        private void btnDoublePage_Click(object sender, RoutedEventArgs e)
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            IsDoublePage = true;
-
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (DataContext is ComicBookViewModel vm)
+                {
+                    double delta = e.Delta > 0 ? 0.01 : -0.01;      // e.Delta > 0 is scroll up < 0 is scroll down
+                    vm.CurrentZoom += delta;
+                }
+                e.Handled = true;
+            }
         }
     }
 }

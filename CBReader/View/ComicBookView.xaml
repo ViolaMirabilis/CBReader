@@ -10,12 +10,24 @@
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
         MouseMove="Window_MouseMove"
-        PreviewKeyDown="Window_PreviewKeyDown">
-    <Grid>
+        PreviewKeyDown="Window_PreviewKeyDown"
+        PreviewMouseWheel="Window_PreviewMouseWheel">
+
+    <Window.InputBindings>
+        <KeyBinding Key="Right" Command="{Binding NextPageCommand}"/>
+        <KeyBinding Key="Left" Command="{Binding PreviousPageCommand}"/>
+    </Window.InputBindings>
+        
+    <Grid  x:Name="ContentGrid">
+        <TextBlock Grid.Row="0" Text="{Binding CurrentZoom}" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+        <TextBlock Grid.Row="0" Text="{Binding CurrentPage}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
         <ScrollViewer x:Name="ComicBookScrollViewer" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                           VerticalAlignment="Center" HorizontalAlignment="Center" VerticalScrollBarVisibility="Hidden">
                 <!-- Gotta make a separate "two page view-->
-            <Grid x:Name="ContentGrid">
+            
+            <Grid>
                 <Grid.LayoutTransform>
                     <ScaleTransform ScaleX="{Binding CurrentZoom}" ScaleY="{Binding CurrentZoom}"/>
                 </Grid.LayoutTransform>
@@ -26,6 +38,7 @@
                             VerticalAlignment="Center">
 
                     <Image x:Name="imgSingle"
+                        Source="{Binding CurrentPageView}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Height="auto"
@@ -34,6 +47,7 @@
                     </Image>
                     
                     <Image x:Name="imgDouble"
+                        Source="{Binding NextPageView}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Height="auto"
@@ -51,11 +65,23 @@
 
         <!-- Buttons that overlap the comic book -->
         <Grid x:Name="OverlapGUIGrid">
+            <Slider Minimum="{Binding MaxZoomOut}"
+                    Maximum="{Binding MaxZoomIn}"
+                    Value="{Binding CurrentZoom, Mode=TwoWay}"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="False"
+                    Orientation="Vertical"
+                    Height="200"
+                    Width="50"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center">
+            </Slider>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Button Content="1x Page View" Height="50" Width="100" Margin="5"/>
-                <Button x:Name="btnDoublePage" Content="2x Page View" Height="50" Width="100" Margin="5" Click="btnDoublePage_Click"/>
-                <Button Content="Zoom IN" Height="50" Width="100" Margin="5" Click="ZoomIN_Click"/>
-                <Button Content="Zoom OUT" Height="50" Width="100" Margin="5" Click="ZoomOUT_Click"/>
+                <Button Content="1x Page View" Height="50" Width="100" Margin="5"
+                        Command="{Binding OnePageViewCommand}"/>
+                <Button x:Name="btnDoublePage" Content="2x Page View" Height="50" Width="100" Margin="5"
+                        Command="{Binding TwoPageViewCommand}"/>
             </StackPanel>
             
         </Grid>

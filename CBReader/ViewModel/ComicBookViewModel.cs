@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using CBReader.Model;
 
 namespace CBReader.ViewModel;
 
@@ -18,11 +19,21 @@ public class ComicBookViewModel : INotifyPropertyChanged
     private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
     private readonly DispatcherTimer _mouseHoverDelay;
     private const double _zoomMultiplier = 0.10;
-    private const double _maxZoomOut = 0.10;
-    private const double _maxZoomIn = 2.5;
-    private int _totalPages = 0;
+
 
     #region Binding Properties
+    private const double _maxZoomOut = 0.01;
+    public double MaxZoomOut        // read only
+    {
+        get { return _maxZoomOut; }
+    }
+    private const double _maxZoomIn = 3.0;
+   
+    public double MaxZoomIn // read only
+    {
+        get { return _maxZoomIn; }
+    }
+
     private bool _isOverlapUIVisible = false;
     public bool IsOverlapUIVisible
     {
@@ -33,9 +44,33 @@ public class ComicBookViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
+
+    private int _totalPages = 0;
+    public int TotalPages
+    {
+        get { return _totalPages; }
+        set {
+            _totalPages = value;
+            OnPropertyChanged();
+        }
+    }
+
     private int _currentPage = 0;
     public int CurrentPage
+    {
+        get { return _currentPage; }
+        set
+        {
+            _currentPage = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(CurrentPage));
+            OnPropertyChanged(nameof(CurrentPageView));
+            OnPropertyChanged(nameof(NextPage));
+            OnPropertyChanged(nameof(NextPageView));
+        }
+    }
+    private int _nextPage;
+    public int NextPage
     {
         get { return _currentPage; }
         set
@@ -67,7 +102,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
         }
     }
 
-    private double _currentZoom = 0.5F;
+    private double _currentZoom = 0.50;
     public double CurrentZoom
     {
         get { return _currentZoom; }
@@ -79,7 +114,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
     }
 
     public BitmapImage CurrentPageView => _comicBookPages[CurrentPage];    // Holds a reference to the current page                           
-    public BitmapImage? PreviousPageView => CurrentPage > 0 ? _comicBookPages[CurrentPage - 1] : null;  // Holds a reference to previous page
+    public BitmapImage? NextPageView => CurrentPage >= 0 ? _comicBookPages[CurrentPage + 1] : null;  // Holds a reference to previous page
 
     #endregion
 
@@ -87,8 +122,8 @@ public class ComicBookViewModel : INotifyPropertyChanged
     #region Commands
     public ICommand ZoomInCommand { get; set; }
     public ICommand ZoomOutCommand { get; set; }
-    public ICommand NextPageCommand { get; set; }
-    public ICommand PreviousPageCommand { get; set; }
+    public ICommand GoNextPageCommand { get; set; }
+    public ICommand GoPreviousPageCommand { get; set; }
     public ICommand OnePageViewCommand { get; set; }
     public ICommand TwoPageViewCommand { get; set; }
     #endregion
@@ -98,17 +133,14 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     public ComicBookViewModel()
     {
-
         _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
         _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
         _mouseHoverDelay.Tick += MouseHoverDelay_Tick;
 
-        _totalPages = SetTotalPages();
-
         ZoomInCommand = new RelayCommand(ZoomIn);
         ZoomOutCommand = new RelayCommand(ZoomOut);
-        NextPageCommand = new RelayCommand(NextPage, CanGoNextPage);
-        PreviousPageCommand = new RelayCommand(PreviousPage, CanGoPreviousPage);
+        GoNextPageCommand = new RelayCommand(GoNextPage, CanGoNextPage);
+        GoPreviousPageCommand = new RelayCommand(GoPreviousPage, CanGoPreviousPage);
         OnePageViewCommand = new RelayCommand(SetOnePageView);
         TwoPageViewCommand = new RelayCommand(SetTwoPageView);
     }
@@ -126,32 +158,72 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     private void SetTwoPageView(object obj) => IsDoublePage = true;
 
-    private bool CanGoPreviousPage(object obj) => CurrentPage > 0;
-
-    private void PreviousPage(object obj)
+    private bool CanGoPreviousPage(object obj)
     {
-        CurrentPage--;
-        OnPropertyChanged(nameof(CurrentPageView));
-        OnPropertyChanged(nameof(PreviousPageView));
+        return CurrentPage > 0;
     }
 
-    private bool CanGoNextPage(object obj) => CurrentPage < _totalPages - 1;        // If current page is NOT the last page.
-
-    private void NextPage(object obj)
+    private void GoPreviousPage(object obj)
     {
-        CurrentPage += 1;
-        OnPropertyChanged(nameof(CurrentPageView));
-        OnPropertyChanged(nameof(PreviousPageView));
+        if (IsDoublePage)
+        {
+            if (CurrentPage - 2 >= 0)       // so we don't go below 0 (page one)
+            {
+                CurrentPage -= 2;
+            }
+            else
+            {
+                CurrentPage = 0;
+            }
+        }
+        else
+        {
+            if (CurrentPage -1 >= 0)
+            {
+                CurrentPage -= 1;
+            }
+        }
+    }
+
+    private bool CanGoNextPage(object obj)
+    {
+        if (IsDoublePage)
+            return CurrentPage < _totalPages - 2;   // so the last two pages are visible at the end.
+        else
+            return CurrentPage < _totalPages - 1;
+    }
+
+    private void GoNextPage(object obj)
+    {
+        if (IsDoublePage)       // double page view
+        {
+            if (CurrentPage + 2 < TotalPages)       // if possible, skips two pages
+            {
+                CurrentPage += 2;
+            }
+            else if (CurrentPage + 1 < TotalPages)      // if not, skips one
+            {
+                CurrentPage += 1;
+            }        
+        }
+        else // single page view
+        {
+            if (CurrentPage + 1 < TotalPages)
+            {
+                CurrentPage += 1;
+            }
+        }
+       
     }
 
     private void ZoomOut(object obj)
     {
-        CurrentZoom = Math.Min(CurrentZoom - _zoomMultiplier, _maxZoomOut);    // The value can't go below 0.10
+        CurrentZoom = Math.Max(CurrentZoom - _zoomMultiplier, _maxZoomOut);    // The value can't go below 0.10. Math.Max needed
     }
 
     private void ZoomIn(object obj)
     {
-        CurrentZoom = Math.Min(CurrentZoom + _zoomMultiplier, _maxZoomIn);    // The value can't go above 3.0
+        CurrentZoom = Math.Min(CurrentZoom + _zoomMultiplier, _maxZoomIn);    // The value can't go above 3.0. Math.Min needed
     }
 
     #region Helper methods
@@ -202,11 +274,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
             }
         }
 
-        if (_comicBookPages.Count > 0)
-        {
-            // To change due to moving from the view to the view model
-            //imgSingle.Source = _comicBookPages[_currentPage];
-        }
+        TotalPages = SetTotalPages();
 
     }
 
@@ -214,7 +282,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     #region INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)     // CallerMemberName so the method can be called without property's name
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)     // CallerMemberName so the method can be called without property's name
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }
