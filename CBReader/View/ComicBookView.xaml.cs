@@ -63,7 +63,7 @@ namespace CBReader.View
             _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
             _mouseHoverDelay.Tick += MouseHoverDelay_Tick;                  // ticks 
         }
-
+        
         /// <summary>
         /// If the mouse moves, the timer starts and the UI shows right away. After the 1000ms, it ticks (stops the timer) and hids the UI.
         /// </summary>
@@ -119,7 +119,7 @@ namespace CBReader.View
             }
             else
             {
-                this.WindowStyle = WindowStyle.SingleBorderWindow;   // reverts back to normal
+                this.WindowStyle = WindowStyle.SingleBorderWindow;   // Reverts back to normal
                 this.WindowState = WindowState.Normal;
                 this.Topmost = false;
                 _isFullScreen = false;

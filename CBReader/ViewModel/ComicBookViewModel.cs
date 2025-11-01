@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace CBReader.ViewModel;
 
@@ -15,12 +16,24 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     // TO SET IMAGES = USE THE "SOURCE" IN SINGLE/DOUBLE PAGE VIEW IN THE VIEW@@@@
     private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
+    private readonly DispatcherTimer _mouseHoverDelay;
     private const double _zoomMultiplier = 0.10;
     private const double _maxZoomOut = 0.10;
     private const double _maxZoomIn = 2.5;
     private int _totalPages = 0;
 
     #region Binding Properties
+    private bool _isOverlapUIVisible = false;
+    public bool IsOverlapUIVisible
+    {
+        get { return _isOverlapUIVisible; }
+        set
+        {
+            _isOverlapUIVisible = value;
+            OnPropertyChanged();
+        }
+    }
+    
     private int _currentPage = 0;
     public int CurrentPage
     {
@@ -64,11 +77,14 @@ public class ComicBookViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    public BitmapImage CurrentPageView => _comicBookPages[CurrentPage];    // Holds a reference to the current page                           
+    public BitmapImage? PreviousPageView => CurrentPage > 0 ? _comicBookPages[CurrentPage - 1] : null;  // Holds a reference to previous page
+
     #endregion
 
 
     #region Commands
-    public ICommand FullScreenCommand { get; set; }
     public ICommand ZoomInCommand { get; set; }
     public ICommand ZoomOutCommand { get; set; }
     public ICommand NextPageCommand { get; set; }
@@ -82,8 +98,13 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     public ComicBookViewModel()
     {
+
+        _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
+        _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
+        _mouseHoverDelay.Tick += MouseHoverDelay_Tick;
+
         _totalPages = SetTotalPages();
-        FullScreenCommand = new RelayCommand(ToggleFullScreen);
+
         ZoomInCommand = new RelayCommand(ZoomIn);
         ZoomOutCommand = new RelayCommand(ZoomOut);
         NextPageCommand = new RelayCommand(NextPage, CanGoNextPage);
@@ -91,6 +112,15 @@ public class ComicBookViewModel : INotifyPropertyChanged
         OnePageViewCommand = new RelayCommand(SetOnePageView);
         TwoPageViewCommand = new RelayCommand(SetTwoPageView);
     }
+
+
+    #region Timer Tick
+    private void MouseHoverDelay_Tick(object? sender, EventArgs e)
+    {
+        _mouseHoverDelay.Stop();        // Stops the timer
+        IsOverlapUIVisible = false;     // Hides the UI (when the mouse stops moving)
+    }
+    #endregion
 
     private void SetOnePageView(object obj) => IsDoublePage = false;
 
@@ -101,6 +131,8 @@ public class ComicBookViewModel : INotifyPropertyChanged
     private void PreviousPage(object obj)
     {
         CurrentPage--;
+        OnPropertyChanged(nameof(CurrentPageView));
+        OnPropertyChanged(nameof(PreviousPageView));
     }
 
     private bool CanGoNextPage(object obj) => CurrentPage < _totalPages - 1;        // If current page is NOT the last page.
@@ -108,6 +140,8 @@ public class ComicBookViewModel : INotifyPropertyChanged
     private void NextPage(object obj)
     {
         CurrentPage += 1;
+        OnPropertyChanged(nameof(CurrentPageView));
+        OnPropertyChanged(nameof(PreviousPageView));
     }
 
     private void ZoomOut(object obj)
@@ -119,12 +153,6 @@ public class ComicBookViewModel : INotifyPropertyChanged
     {
         CurrentZoom = Math.Min(CurrentZoom + _zoomMultiplier, _maxZoomIn);    // The value can't go above 3.0
     }
-
-    private void ToggleFullScreen(object obj)
-    {
-        IsFullscreen = !IsFullscreen;
-    }
-
 
     #region Helper methods
     private int SetTotalPages()

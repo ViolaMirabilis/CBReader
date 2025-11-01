@@ -32,6 +32,7 @@
                         Width="auto"
                         Stretch="None">
                     </Image>
+                    
                     <Image x:Name="imgDouble"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
