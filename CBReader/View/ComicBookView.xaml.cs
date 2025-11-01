@@ -32,7 +32,7 @@ namespace CBReader.View
         public ComicBookView()
         {
             InitializeComponent();
-            DataContext = new ComicBookViewModel(); // so the CurrentZoom is loaded initially
+            //DataContext = new ComicBookViewModel(); // Not needed here because it's passed in via the MainWindowViewModel, during the creation of this view.
             ContentGrid.Focusable = true;
             ContentGrid.Focus();
 

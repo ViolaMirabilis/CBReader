@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using CBReader.Model;
+using CBReader.Services;
 
 namespace CBReader.ViewModel;
 
@@ -16,7 +17,12 @@ public class ComicBookViewModel : INotifyPropertyChanged
 {
 
     // TO SET IMAGES = USE THE "SOURCE" IN SINGLE/DOUBLE PAGE VIEW IN THE VIEW@@@@
+    private readonly ComicBookService _comicBookService = new ComicBookService();
     private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
+    public IReadOnlyList<BitmapImage> ComicBookPages
+    {
+        get { return _comicBookPages;}
+    }
     private readonly DispatcherTimer _mouseHoverDelay;
     private const double _zoomMultiplier = 0.10;
 
@@ -131,8 +137,10 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
 
 
-    public ComicBookViewModel()
+    public ComicBookViewModel(ComicBookService service)
     {
+        _comicBookService = service; // repsonsible for reading the comic book from the archive
+
         _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
         _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
         _mouseHoverDelay.Tick += MouseHoverDelay_Tick;
@@ -226,55 +234,13 @@ public class ComicBookViewModel : INotifyPropertyChanged
         CurrentZoom = Math.Min(CurrentZoom + _zoomMultiplier, _maxZoomIn);    // The value can't go above 3.0. Math.Min needed
     }
 
-    #region Helper methods
-    private int SetTotalPages()
-    {
-        return _comicBookPages.Count;
-    }
-    #endregion
-
     #region Reading comic book from the archive --> in memory
     // Should be async with a "loading" animation
-    public void LoadComicBookFromArchive(string path)
+    public void LoadComicBookFromArchiveToMemory(ComicBook comic)
     {
-        _comicBookPages.Clear();
-
-        // @See https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
-        using (Stream stream = File.OpenRead(path))
-        using (var reader = ReaderFactory.Open(stream))
-        {
-            while (reader.MoveToNextEntry())        // Goes into the all the files
-            {
-                if (!reader.Entry.IsDirectory)      // If the file isn't a folder, it runs the code below.
-                {
-                    using (var entryStream = reader.OpenEntryStream())
-                    {
-                        // Cannot use StreamReader, as it reads raw bytes (not suitable for images)
-                        // @See https://stackoverflow.com/questions/5346727/convert-memory-stream-to-bitmapimage
-                        byte[] data;        // The image data needs to be in an array first
-                        using (var ms = new MemoryStream())
-                        {
-                            entryStream.CopyTo(ms);     // Reads from one stream, writes to another (ms)
-                            data = ms.ToArray();        // then the data array gets the memory stream
-                        }
-
-                        var bitmap = new BitmapImage();
-                        using (var ms2 = new MemoryStream(data))
-                        {
-                            bitmap.BeginInit();
-                            bitmap.CacheOption = BitmapCacheOption.OnLoad;        // Important
-                            bitmap.StreamSource = ms2;
-                            bitmap.EndInit();
-                            bitmap.Freeze();
-                        }
-
-                        _comicBookPages.Add(bitmap);     // Adds the converted bytes to the list of Bitmaps
-                    }
-                }
-            }
-        }
-
-        TotalPages = SetTotalPages();
+        _comicBookPages = _comicBookService.LoadComicBookToMemory(comic);       // utilises the service
+        OnPropertyChanged(nameof(ComicBookPages));
+        TotalPages = _comicBookPages.Count;
 
     }
 

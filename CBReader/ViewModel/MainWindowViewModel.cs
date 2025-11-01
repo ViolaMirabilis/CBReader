@@ -1,5 +1,6 @@
 ﻿using CBReader.Commands;
 using CBReader.Model;
+using CBReader.Services;
 using CBReader.View;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -13,7 +14,8 @@ namespace CBReader.ViewModel;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();
+    private readonly ComicBookService _comicBookService = new ComicBookService();
+    public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
     private bool _showEmptyComicBookListLabel;  // responsible for showing
     public bool ShowEmptyComicBookListLabel
     {
@@ -53,12 +55,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         if (obj is ComicBook comic)
         {
-            var vm = new ComicBookViewModel();
-            vm.LoadComicBookFromArchive(comic.ArchivePath);
+            var vm = new ComicBookViewModel(_comicBookService);
+            vm.LoadComicBookFromArchiveToMemory(comic);
 
             ComicBookView comicBookView = new ComicBookView
             {
-                DataContext = vm
+                DataContext = vm        // set here, not needed in the ComicBookView Data Context
             };
 
             comicBookView.Show();

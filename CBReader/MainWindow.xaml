@@ -58,6 +58,15 @@
                     <controls:ComicBookControl/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            
+            <!-- disables hover over colour -->
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            
         </ListBox>
 
         <Label Grid.Row="1"
