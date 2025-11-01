@@ -128,7 +128,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
                 case ".zip":
                 case ".7z":
                     // Get file name, path 
-                    var newComicBook = _comicBookService.GetComicBookData(filename, archivePath);       // gets name and the path
+                    var newComicBook = _comicBookService.GetComicBookData(filename, archivePath, ComicBooks);       // gets name and the path
                     _comicBookService.GetComicBookCover(newComicBook);  // creates and saves the cover + path
                     ComicBooks.Add(newComicBook);       // adds a full comic to the list
                     break;

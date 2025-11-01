@@ -92,7 +92,7 @@ public class ComicBookService
 
 
                         try
-                        {
+                        { 
                             using (var fileStream = new FileStream(outputPath, FileMode.Create))
                             {
                                 PngBitmapEncoder encoder = new PngBitmapEncoder();
@@ -117,8 +117,20 @@ public class ComicBookService
         return string.Empty;
 
     }
-    public ComicBook GetComicBookData(string name, string archivePath)
+    public ComicBook GetComicBookData(string name, string archivePath, ObservableCollection<ComicBook> comicBooks)
     {
+        /*if (comicBooks.Any(c => c.Title == name))
+        {
+            int counter = 1;
+            string newName;
+            do
+            {
+                newName = $"{name} ({counter})";     // e.g. TWD (1);
+                counter++;
+            } while (comicBooks.Any(c => c.Title == name));
+
+            name = newName;
+        } */
         return new ComicBook(name, archivePath);
     }
 }

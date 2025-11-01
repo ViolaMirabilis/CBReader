@@ -73,6 +73,10 @@
             
         </ListBox>
 
+        <Button VerticalAlignment="Center" HorizontalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0">
+        </Button>
         <Label Grid.Row="1"
                x:Name="lblSetComicBookFolder"
                Content="Double click to set a folder with comic book resources..."
