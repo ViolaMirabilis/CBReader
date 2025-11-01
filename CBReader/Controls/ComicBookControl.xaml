@@ -90,14 +90,6 @@
             VerticalAlignment="Bottom"
             Visibility="{Binding IsFavourite, Converter={StaticResource BoolToVis}}"/>
 
-        <TextBlock Text="{Binding Pages}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Margin="2" FontSize="16"
-            FontFamily="Bahnschrift"
-            TextWrapping="WrapWithOverflow">
-        </TextBlock>
-
     </Grid>
 
 </UserControl>

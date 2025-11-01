@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CBReader"
         xmlns:controls="clr-namespace:CBReader.Controls"
         xmlns:converters="clr-namespace:CBReader.Converters"
+        xmlns:behaviours="clr-namespace:CBReader.Helpers"
         mc:Ignorable="d"
         Title="CBReader Library"
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
@@ -38,9 +39,12 @@
   
         <ListBox Grid.Row="1"
                  ItemsSource="{Binding ComicBooks}"
+                 behaviours:FileDragDropHelper.IsFileDragDropEnabled="True"
+                 behaviours:FileDragDropHelper.FileDragDropTarget="{Binding}"
                  Margin="50"
                  Height="auto"
                  Width="auto"
+                 AllowDrop="True"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                  ScrollViewer.VerticalScrollBarVisibility="Hidden"     
                  MouseDoubleClick="ListBox_MouseDoubleClick">

@@ -6,12 +6,11 @@ namespace CBReader.Model;
 
 public class ComicBook : INotifyPropertyChanged
 {
-    public int Id { get; set; }
+    static int Id;
     public string Title { get; set; } = "Name not found";
-    public int Pages { get; set; }
     public int LastReadPage { get; set; } = 0;      // JSON?
     // Making it bindable, so the UI is notified once the "favourite" property changes.
-    private bool _isFavourite;
+    private bool _isFavourite = false;
     public bool IsFavourite
     {
         get { return _isFavourite; }
@@ -27,13 +26,11 @@ public class ComicBook : INotifyPropertyChanged
     public string CoverPath { get; set; } = @"C:\Users\zajac\Desktop\test.jpg";     // Temporarily default CoverPath
     
 
-    public ComicBook(int id, string title, int pages, string coverPath = "", bool isFavourite = false)
+    public ComicBook(string title, string archivePath)
     {
-        Id = id;
         Title = title;
-        Pages = pages;
-        CoverPath = string.IsNullOrEmpty(coverPath) ? CoverPath : coverPath;        // if null, returns the empty "" as a cover path.
-        IsFavourite = isFavourite;
+        ArchivePath = archivePath;
+        Id++;
     }
 
 
