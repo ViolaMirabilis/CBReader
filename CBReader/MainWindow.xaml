@@ -32,7 +32,7 @@
             
             <MenuItem Header="Settings">
                 <MenuItem Header="Full screen" IsCheckable="True"/>
-                <MenuItem Header="Change comics folder"/>
+                <MenuItem Header="Change comics folder" Command="{Binding SelectFolderCommand}"/>
             </MenuItem>
 
             <MenuItem Header="About"/>
