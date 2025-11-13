@@ -69,6 +69,8 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
             return;
 
         ComicBookFolderPath = folderPath;
+
+        _comicBookService.LoadComicsFromFolder(folderPath, ComicBooks);
     }
 
     private bool CanDragAndDrop(object obj)
