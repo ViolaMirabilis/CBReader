@@ -18,7 +18,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
     private readonly ComicBookService _comicBookService = new ComicBookService();
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
-    private bool _showEmptyComicBookListLabel;  // responsible for showing
+    private bool _showEmptyComicBookListLabel = true;  // responsible for showing
     public bool ShowEmptyComicBookListLabel
     {
         get { return _showEmptyComicBookListLabel;}
@@ -43,7 +43,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public MainWindowViewModel()
     {
         //FillComicBooks();
-        // An event, which sets the value to true if the ComicBooks.Count is equal to 0. DOESN'T WORK ._.
+        // An event, which sets the value to true if the ComicBooks.Count is equal to 0.
         ComicBooks.CollectionChanged += (s, e) =>
         {
             ShowEmptyComicBookListLabel = ComicBooks.Count == 0;
@@ -116,7 +116,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
                     // Get file name, path 
                     var newComicBook = _comicBookService.GetComicBookData(filename, archivePath, ComicBooks);       // Gets name and the path. Returns a comic book.
                     _comicBookService.GetComicBookCover(newComicBook);  // creates and saves the cover + path
-                    ComicBooks.Add(newComicBook);       // adds a full comic to the list
+                    ComicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
                     break;
                 default:
                     MessageBox.Show("Unsupported file!");

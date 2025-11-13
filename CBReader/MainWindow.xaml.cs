@@ -37,9 +37,13 @@ namespace CBReader
         {
             var listBox = sender as ListBox;        // casts the sender to ListBox
             var selectedItem = listBox?.SelectedItem as ComicBook;   // casts the selected item as ComicBook
-            if (DataContext is MainWindowViewModel vm && selectedItem != null)
+            if (DataContext is MainWindowViewModel vm && selectedItem != null)      // executs if the selected item is ComicBook and Not null. Otherwise, it opens up the dialog.
             {
                 vm.ShowComicBookCommand.Execute(selectedItem);
+            }
+            else
+            {
+                MessageBox.Show("YOU CLICKED ON NOTINHG");
             }
         }
 

@@ -79,6 +79,7 @@ public class ComicBookService : IComicBookService
                             bitmap.StreamSource = ms2;
                             bitmap.EndInit();
                             bitmap.Freeze();
+
                         }
 
                         string safeTitle = string.Join("_", comic.Title.Split(Path.GetInvalidFileNameChars()));     // if characters are in incorrect format, "_" is used instead.
@@ -95,6 +96,7 @@ public class ComicBookService : IComicBookService
 
                         try
                         { 
+                            // make sure the image doesn't stay in memory
                             using (var fileStream = new FileStream(outputPath, FileMode.Create))
                             {
                                 PngBitmapEncoder encoder = new PngBitmapEncoder();
