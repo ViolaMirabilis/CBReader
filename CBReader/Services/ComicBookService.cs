@@ -1,4 +1,5 @@
-﻿using CBReader.Model;
+﻿using CBReader.Interfaces;
+using CBReader.Model;
 using SharpCompress.Readers;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,11 +8,12 @@ using System.Windows.Media.Imaging;
 
 namespace CBReader.Services;
 
-public class ComicBookService
+public class ComicBookService : IComicBookService
 {
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comic)
     {
         List<BitmapImage> comicBookPages = new List<BitmapImage>();
+        
         // @See https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
         using (Stream stream = File.OpenRead(comic.ArchivePath))
         using (var reader = ReaderFactory.Open(stream))
@@ -31,6 +33,7 @@ public class ComicBookService
                             data = ms.ToArray();        // then the data array gets the memory stream
                         }
 
+                        // converting from bytes to bitmap
                         var bitmap = new BitmapImage();
                         using (var ms2 = new MemoryStream(data))
                         {
@@ -48,7 +51,6 @@ public class ComicBookService
         }
 
         return comicBookPages;
-
     }
 
     public string GetComicBookCover(ComicBook comic)       // saves the first page as a .png

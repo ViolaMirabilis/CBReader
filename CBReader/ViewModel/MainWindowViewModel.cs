@@ -24,11 +24,16 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         get { return _showEmptyComicBookListLabel;}
         set
         {
-            _showEmptyComicBookListLabel = value;
-            OnPropertyChanged();
+            if(_showEmptyComicBookListLabel != value)
+            {
+                _showEmptyComicBookListLabel = value;
+                OnPropertyChanged();
+            }
+            
         }
 
     }
+
 
     #region Commands declarations
     public ICommand ShowComicBookCommand { get; set; }
@@ -37,7 +42,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
     public MainWindowViewModel()
     {
-        FillComicBooks();
+        //FillComicBooks();
         // An event, which sets the value to true if the ComicBooks.Count is equal to 0.
         ComicBooks.CollectionChanged += (s, e) =>
         {
@@ -101,14 +106,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     }
     #endregion
 
-    #region INotifyPropertyChanged
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)     // CallerMemberName so the method can be called without property's name
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
-    }
-    #endregion
-
     #region IFileDragDrop
     public void OnFileDrop(string[] filepaths)
     {
@@ -137,7 +134,17 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
                     break;
             }
         }
+
+        OnPropertyChanged(nameof(ShowEmptyComicBookListLabel));
         
+    }
+    #endregion
+
+    #region INotifyPropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)     // CallerMemberName so the method can be called without property's name
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }
     #endregion
 

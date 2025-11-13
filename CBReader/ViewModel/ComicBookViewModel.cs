@@ -78,7 +78,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
     private int _nextPage;
     public int NextPage
     {
-        get { return _currentPage; }
+        get { return _nextPage; }
         set
         {
             _currentPage = value;

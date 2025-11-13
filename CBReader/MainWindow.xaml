@@ -84,7 +84,7 @@
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
                Opacity="0.50"
-               Visibility="{Binding ShowEmptyFolderLabel, Converter={StaticResource BoolToVis}}"
+               Visibility="{Binding ShowEmptyComicBookListLabel, Converter={StaticResource BoolToVis}}"
                />
     </Grid>
 </Window>

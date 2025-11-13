@@ -36,8 +36,6 @@ namespace CBReader.View
             ContentGrid.Focusable = true;
             ContentGrid.Focus();
 
-
-
             _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
             _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
             _mouseHoverDelay.Tick += MouseHoverDelay_Tick;                  // ticks 
