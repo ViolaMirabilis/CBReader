@@ -43,26 +43,12 @@ namespace CBReader
             }
         }
 
+        // Topbar
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuItem menuItem)        // MenuItem as the context menu defined in MainWindow.xaml
+            if (sender is MenuItem menuItem)        // MenuItem as the context menu defined in MainWindow.xaml. Cast is needed to access .DataContext properties
             {
-                if (menuItem.DataContext is ComicBook comicBook)
-                {
-                    if (comicBook.IsFavourite == false)
-                    {
-                        menuItem.Header = "Add to favourite";
-                        comicBook.IsFavourite = true;
-                        MessageBox.Show("Added to favourites!");
-                    }
-                    else
-                    {
-                        menuItem.Header = "Delete from favourites";
-                        comicBook.IsFavourite = false;
-                        MessageBox.Show("Added to favourites!");
-                    }
-                        
-                }
+                // to do later on
             }
         }
     }
