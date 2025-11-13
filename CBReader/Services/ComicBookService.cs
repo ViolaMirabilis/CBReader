@@ -146,4 +146,40 @@ public class ComicBookService : IComicBookService
     {
 
     }
+
+    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> ComicBooks)
+    {
+        // NEEDS CLEANUP. There's repetition in the MAinWindowViewModel (FileDragAndDrop)!!!!!!!!
+        string[] comics = Directory.GetFiles(folderPath);
+        foreach (var file in comics)
+        {
+            string filename = Path.GetFileNameWithoutExtension(file);
+            string extension = Path.GetExtension(file).ToLower();
+            // move/copy from archivePath to ComicBook Library Path set by the user.
+            string archivePath = file;      // file is a path already
+
+            switch (extension)
+            {
+                // all the basic extensions
+                case ".cbr":
+                case ".cbz":
+                case ".rar":
+                case ".zip":
+                case ".7z":
+                    // Get file name, path 
+                    var newComicBook = GetComicBookData(filename, archivePath, ComicBooks);       // Gets name and the path. Returns a comic book.
+                    GetComicBookCover(newComicBook);  // creates and saves the cover + path
+                    ComicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
+                    break;
+                default:
+                    MessageBox.Show("Unsupported file!");
+                    break;
+            }
+        }
+    }
+
+    public void LoadCoverFromFolder(string coverPath)
+    {
+        // TO DO
+    }
 }
