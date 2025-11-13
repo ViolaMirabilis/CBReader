@@ -43,7 +43,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public MainWindowViewModel()
     {
         //FillComicBooks();
-        // An event, which sets the value to true if the ComicBooks.Count is equal to 0.
+        // An event, which sets the value to true if the ComicBooks.Count is equal to 0. DOESN'T WORK ._.
         ComicBooks.CollectionChanged += (s, e) =>
         {
             ShowEmptyComicBookListLabel = ComicBooks.Count == 0;
@@ -82,7 +82,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     {
         if (obj is ComicBook comic)
         {
-            var vm = new ComicBookViewModel(_comicBookService);
+            var vm = new ComicBookViewModel(_comicBookService);     // creates a new comic book service
             vm.LoadComicBookFromArchiveToMemory(comic);
 
             ComicBookView comicBookView = new ComicBookView
@@ -92,17 +92,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
             comicBookView.Show();
         }
-    }
-    #endregion
-
-
-    #region General Methods
-    void FillComicBooks()
-    {
-        ComicBooks.Add(new ComicBook("The Walking Dead", "asd"));
-        ComicBooks.Add(new ComicBook("Batman", "Asd"));
-        ComicBooks.Add(new ComicBook("Spiderman", "asdasdasd"));
-
     }
     #endregion
 
@@ -125,7 +114,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
                 case ".zip":
                 case ".7z":
                     // Get file name, path 
-                    var newComicBook = _comicBookService.GetComicBookData(filename, archivePath, ComicBooks);       // gets name and the path
+                    var newComicBook = _comicBookService.GetComicBookData(filename, archivePath, ComicBooks);       // Gets name and the path. Returns a comic book.
                     _comicBookService.GetComicBookCover(newComicBook);  // creates and saves the cover + path
                     ComicBooks.Add(newComicBook);       // adds a full comic to the list
                     break;

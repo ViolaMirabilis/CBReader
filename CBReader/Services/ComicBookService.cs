@@ -53,25 +53,25 @@ public class ComicBookService : IComicBookService
         return comicBookPages;
     }
 
-    public string GetComicBookCover(ComicBook comic)       // saves the first page as a .png
+    public string GetComicBookCover(ComicBook comic)       // Saves the first page as a .png
     {
         using (Stream stream = File.OpenRead(comic.ArchivePath))
         using (var reader = ReaderFactory.Open(stream))
         {
-            while (reader.MoveToNextEntry())        // Goes into the all the files
+            while (reader.MoveToNextEntry())        // Goes into the all the files in a folder
             {
                 if (!reader.Entry.IsDirectory)      // If the file isn't a folder, it runs the code below.
                 {
                     using (var entryStream = reader.OpenEntryStream())
                     {
-                        byte[] data;
+                        byte[] data;        // placeholder to which the data is copied
                         using (var ms = new MemoryStream())
                         {
                             entryStream.CopyTo(ms);
-                            data = ms.ToArray();
+                            data = ms.ToArray();        // here
                         }
 
-                        var bitmap = new BitmapImage();
+                        var bitmap = new BitmapImage();     // new comic book cover
                         using (var ms2 = new MemoryStream(data))
                         {
                             bitmap.BeginInit();
@@ -81,7 +81,7 @@ public class ComicBookService : IComicBookService
                             bitmap.Freeze();
                         }
 
-                        string safeTitle = string.Join("_", comic.Title.Split(Path.GetInvalidFileNameChars()));
+                        string safeTitle = string.Join("_", comic.Title.Split(Path.GetInvalidFileNameChars()));     // if characters are in incorrect format, "_" is used instead.
                         // directory for the covers/thumbnails
                         string comicBookCoversPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thumbnails");
                         if (!Directory.Exists(comicBookCoversPath))
@@ -121,18 +121,27 @@ public class ComicBookService : IComicBookService
     }
     public ComicBook GetComicBookData(string name, string archivePath, ObservableCollection<ComicBook> comicBooks)
     {
-        /*if (comicBooks.Any(c => c.Title == name))
+
+        if (comicBooks.Any(c => c.Title == name))       // if a name exists, add 1
         {
             int counter = 1;
             string newName;
             do
             {
+                // do some tinkering here, so it's always Book (1), Book (2), etc. and not Book (1) (2)
                 newName = $"{name} ({counter})";     // e.g. TWD (1);
+                name = newName;
                 counter++;
-            } while (comicBooks.Any(c => c.Title == name));
+            } while (comicBooks.Any(c => c.Title == name));     // infinite loop
 
-            name = newName;
-        } */
+            //name = newName;
+        }
+        
         return new ComicBook(name, archivePath);
+    }
+
+    public void CheckExistingName(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks)
+    {
+
     }
 }
