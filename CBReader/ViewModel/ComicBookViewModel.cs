@@ -86,13 +86,13 @@ public class ComicBookViewModel : INotifyPropertyChanged
         }
     }
 
-    private bool _isTwoPageView = false;
+    private bool _isDoublePageView = false;
     public bool IsDoublePage
     {
-        get { return _isTwoPageView; }
+        get { return _isDoublePageView; }
         set
         {
-            _isTwoPageView = value;
+            _isDoublePageView = value;
             OnPropertyChanged();
         }
     }

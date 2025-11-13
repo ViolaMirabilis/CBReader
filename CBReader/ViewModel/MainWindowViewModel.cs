@@ -16,9 +16,10 @@ namespace CBReader.ViewModel;
 
 public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
+    private readonly IFileDialogService _fileDialogService;
     private readonly ComicBookService _comicBookService = new ComicBookService();
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
-    private bool _showEmptyComicBookListLabel = true;  // responsible for showing
+    private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
     public bool ShowEmptyComicBookListLabel
     {
         get { return _showEmptyComicBookListLabel;}
@@ -34,28 +35,42 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
     }
 
+    public string? ComicBookFolderPath { get; set; }
+
 
     #region Commands declarations
+    public ICommand SelectFolderCommand { get; set; }
     public ICommand ShowComicBookCommand { get; set; }
     public ICommand HandleDragAndDrop { get; set; }
     #endregion
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(IFileDialogService fileDialogService)
     {
-        //FillComicBooks();
-        // An event, which sets the value to true if the ComicBooks.Count is equal to 0.
+        _fileDialogService = fileDialogService;
+        // An event, which sets the value to true if the ComicBooks.Count is equal to 0. Lambda expression btw, shorter version.
         ComicBooks.CollectionChanged += (s, e) =>
         {
             ShowEmptyComicBookListLabel = ComicBooks.Count == 0;
         };
+
         ShowComicBookCommand = new RelayCommand(OpenComicBook, CanOpenComicBook);
         HandleDragAndDrop = new RelayCommand(DragAndDrop, CanDragAndDrop);
-        
+        SelectFolderCommand = new RelayCommand(OpenFolder);
+       
     }
 
 
-
     #region Commands logic
+    private void OpenFolder(object obj)
+    {
+        string? folderPath = _fileDialogService.ChooseComicFolderPath();
+
+        if (folderPath == null)
+            return;
+
+        ComicBookFolderPath = folderPath;
+    }
+
     private bool CanDragAndDrop(object obj)
     {
         // if file extension is:

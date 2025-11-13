@@ -1,4 +1,6 @@
-﻿using CBReader.Model;
+﻿using CBReader.Interfaces;
+using CBReader.Model;
+using CBReader.Services;
 using CBReader.View;
 using CBReader.ViewModel;
 using Microsoft.Win32;
@@ -26,10 +28,19 @@ namespace CBReader
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IFileDialogService _fileDialogService;
+        // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view.
+        public MainWindow() : this(new FileDialogService())
         {
+
+        }
+        
+        public MainWindow(IFileDialogService fileDialogService)
+        {
+            _fileDialogService = fileDialogService;
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            
+            DataContext = new MainWindowViewModel(_fileDialogService);
         }
 
         // integrated with MainWindowViewModel
@@ -37,13 +48,19 @@ namespace CBReader
         {
             var listBox = sender as ListBox;        // casts the sender to ListBox
             var selectedItem = listBox?.SelectedItem as ComicBook;   // casts the selected item as ComicBook
-            if (DataContext is MainWindowViewModel vm && selectedItem != null)      // executs if the selected item is ComicBook and Not null. Otherwise, it opens up the dialog.
+            if (DataContext is MainWindowViewModel vm)      // executs if the selected item is ComicBook and Not null. Otherwise, it opens up the dialog.
             {
-                vm.ShowComicBookCommand.Execute(selectedItem);
-            }
-            else
-            {
-                MessageBox.Show("YOU CLICKED ON NOTINHG");
+                if (selectedItem != null)
+                {
+                    vm.ShowComicBookCommand.Execute(selectedItem);
+                    return;
+                }
+                
+                if (vm.ComicBooks.Count == 0)
+                {
+                    vm.SelectFolderCommand.Execute(null);
+                }
+                
             }
         }
 
