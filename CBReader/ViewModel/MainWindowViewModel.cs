@@ -17,7 +17,7 @@ namespace CBReader.ViewModel;
 public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
     private readonly IFileDialogService _fileDialogService;
-    private readonly ComicBookService _comicBookService = new ComicBookService();
+    private readonly ComicBookService _comicBookService = new ComicBookService();       // Created only once
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
     private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
     public bool ShowEmptyComicBookListLabel
@@ -97,7 +97,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     {
         if (obj is ComicBook comic)
         {
-            var vm = new ComicBookViewModel(_comicBookService);     // creates a new comic book service
+            var vm = new ComicBookViewModel(_comicBookService);     // creates a new comic book service. Might assign the field in the constructor, just like the FileDialogService.
             vm.LoadComicBookFromArchiveToMemory(comic);
 
             ComicBookView comicBookView = new ComicBookView

@@ -37,9 +37,8 @@ namespace CBReader
         
         public MainWindow(IFileDialogService fileDialogService)
         {
-            _fileDialogService = fileDialogService;
             InitializeComponent();
-            
+            _fileDialogService = fileDialogService;
             DataContext = new MainWindowViewModel(_fileDialogService);
         }
 
@@ -48,7 +47,7 @@ namespace CBReader
         {
             var listBox = sender as ListBox;        // casts the sender to ListBox
             var selectedItem = listBox?.SelectedItem as ComicBook;   // casts the selected item as ComicBook
-            if (DataContext is MainWindowViewModel vm)      // executs if the selected item is ComicBook and Not null. Otherwise, it opens up the dialog.
+            if (DataContext is MainWindowViewModel vm)      // executes if the selected item is ComicBook and Not null. Otherwise, it opens up the dialog.
             {
                 if (selectedItem != null)
                 {
