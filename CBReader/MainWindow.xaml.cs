@@ -31,7 +31,7 @@ namespace CBReader
         private readonly IFileDialogService _fileDialogService;
         private readonly IComicArchiveReaderService _comicArchiveReaderService;
 
-        // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view.
+        // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view
         public MainWindow() : this(new FileDialogService(), new ComicArchiveReaderService(new ComicBookService()))
         {
 
