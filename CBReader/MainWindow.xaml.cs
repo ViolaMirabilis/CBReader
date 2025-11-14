@@ -29,6 +29,7 @@ namespace CBReader
     public partial class MainWindow : Window
     {
         private readonly IFileDialogService _fileDialogService;
+        
         // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view.
         public MainWindow() : this(new FileDialogService())
         {

@@ -115,31 +115,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     #region IFileDragDrop
     public void OnFileDrop(string[] filepaths)
     {
-        foreach (var file in filepaths)
-        {
-            string filename = Path.GetFileNameWithoutExtension(file);
-            string extension = Path.GetExtension(file).ToLower();
-            // move/copy from archivePath to ComicBook Library Path set by the user.
-            string archivePath = file;      // file is a path already
-
-            switch(extension)
-            {
-                // all the basic extensions
-                case ".cbr":
-                case ".cbz":
-                case ".rar":
-                case ".zip":
-                case ".7z":
-                    // Get file name, path 
-                    var newComicBook = _comicBookService.GetComicBookData(filename, archivePath, ComicBooks);       // Gets name and the path. Returns a comic book.
-                    _comicBookService.GetComicBookCover(newComicBook);  // creates and saves the cover + path
-                    ComicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
-                    break;
-                default:
-                    MessageBox.Show("Unsupported file!");
-                    break;
-            }
-        }
+        _comicBookService.LoadComicsFromDragAndDrop(filepaths, ComicBooks);
 
         OnPropertyChanged(nameof(ShowEmptyComicBookListLabel));
         
@@ -153,5 +129,4 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }
     #endregion
-
 }

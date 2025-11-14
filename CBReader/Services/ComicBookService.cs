@@ -5,11 +5,17 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace CBReader.Services;
 
 public class ComicBookService : IComicBookService
 {
+    public ComicBook CreateComicBook(string name, string archivePath)
+    {
+        return new ComicBook(name, archivePath);
+    }
+    
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comic)
     {
         List<BitmapImage> comicBookPages = new List<BitmapImage>();
@@ -136,18 +142,31 @@ public class ComicBookService : IComicBookService
                 counter++;
             } while (comicBooks.Any(c => c.Title == name));     // infinite loop
 
-            //name = newName;
         }
         
         return new ComicBook(name, archivePath);
     }
 
-    public void CheckExistingName(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks)
+    public void AppendComicNameIfExists(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks)
     {
+        string name = comicBook.Title;
+        if (comicBooks.Any(c => c.Title == name))       // if a name exists, add 1
+        {
+            int counter = 1;
+            string newName;
+            do
+            {
+                // do some tinkering here, so it's always Book (1), Book (2), etc. and not Book (1) (2)
+                newName = $"{name} ({counter})";     // e.g. TWD (1);
+                name = newName;
+                counter++;
+            } while (comicBooks.Any(c => c.Title == name));     // infinite loop
 
+            comicBook.Title = newName;
+        }
     }
 
-    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> ComicBooks)
+    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
     {
         // NEEDS CLEANUP. There's repetition in the MAinWindowViewModel (FileDragAndDrop)!!!!!!!!
         string[] comics = Directory.GetFiles(folderPath);
@@ -167,9 +186,10 @@ public class ComicBookService : IComicBookService
                 case ".zip":
                 case ".7z":
                     // Get file name, path 
-                    var newComicBook = GetComicBookData(filename, archivePath, ComicBooks);       // Gets name and the path. Returns a comic book.
+                    var newComicBook = GetComicBookData(filename, archivePath, comicBooks);       // Gets name and the path. Returns a comic book.
+                    AppendComicNameIfExists(newComicBook, comicBooks);
                     GetComicBookCover(newComicBook);  // creates and saves the cover + path
-                    ComicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
+                    comicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
                     break;
                 default:
                     MessageBox.Show("Unsupported file!");
@@ -178,6 +198,33 @@ public class ComicBookService : IComicBookService
         }
     }
 
+    public void LoadComicsFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> ComicBooks)
+    {
+        foreach (var file in filepaths)
+        {
+            string filename = Path.GetFileNameWithoutExtension(file);
+            string extension = Path.GetExtension(file).ToLower();
+            // move/copy from archivePath to ComicBook Library Path set by the user.
+            string archivePath = file;      // file is a path already
+
+            switch (extension)
+            {
+                case ".cbr":
+                case ".cbz":
+                case ".rar":
+                case ".zip":
+                case ".7z":
+
+                    var comicBook = CreateComicBook(filename, archivePath);     // Creates a new comic book
+                    GetComicBookCover(comicBook);  // creates and saves the cover + path
+                    ComicBooks.Add(comicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
+                    break;
+                default:
+                    MessageBox.Show("Unsupported file!");
+                    break;
+            }
+        }
+    }
     public void LoadCoverFromFolder(string coverPath)
     {
         // TO DO

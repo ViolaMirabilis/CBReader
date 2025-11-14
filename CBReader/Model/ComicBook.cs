@@ -6,7 +6,6 @@ namespace CBReader.Model;
 
 public class ComicBook : INotifyPropertyChanged
 {
-    static int Id;
     public string Title { get; set; } = "Name not found";
     public int LastReadPage { get; set; } = 0;      // JSON?
     // Making it bindable, so the UI is notified once the "favourite" property changes.
@@ -30,7 +29,6 @@ public class ComicBook : INotifyPropertyChanged
     {
         Title = title;
         ArchivePath = archivePath;
-        Id++;
     }
 
 
