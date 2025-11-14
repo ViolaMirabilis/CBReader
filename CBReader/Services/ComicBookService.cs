@@ -15,7 +15,6 @@ public class ComicBookService : IComicBookService
     {
         return new ComicBook(name, archivePath);
     }
-    
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comic)
     {
         List<BitmapImage> comicBookPages = new List<BitmapImage>();
