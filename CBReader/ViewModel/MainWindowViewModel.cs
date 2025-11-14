@@ -17,6 +17,7 @@ namespace CBReader.ViewModel;
 public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
     private readonly IFileDialogService _fileDialogService;
+    private readonly IComicArchiveReaderService _comicArchiveReaderService;
     private readonly ComicBookService _comicBookService = new ComicBookService();       // Created only once
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
     private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
@@ -30,9 +31,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
                 _showEmptyComicBookListLabel = value;
                 OnPropertyChanged();
             }
-            
         }
-
     }
 
     public string? ComicBookFolderPath { get; set; }
@@ -44,9 +43,10 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public ICommand HandleDragAndDrop { get; set; }
     #endregion
 
-    public MainWindowViewModel(IFileDialogService fileDialogService)
+    public MainWindowViewModel(IFileDialogService fileDialogService, IComicArchiveReaderService comicArchiveReaderService)
     {
         _fileDialogService = fileDialogService;
+        _comicArchiveReaderService = comicArchiveReaderService;
         // An event, which sets the value to true if the ComicBooks.Count is equal to 0. Lambda expression btw, shorter version.
         ComicBooks.CollectionChanged += (s, e) =>
         {
@@ -70,7 +70,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
         ComicBookFolderPath = folderPath;
 
-        _comicBookService.LoadComicsFromFolder(folderPath, ComicBooks);
+        _comicArchiveReaderService.LoadFromFolder(folderPath, ComicBooks);
     }
 
     private bool CanDragAndDrop(object obj)
@@ -115,7 +115,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     #region IFileDragDrop
     public void OnFileDrop(string[] filepaths)      // filepaths needed because of the Helper class.
     {
-        _comicBookService.LoadComicsFromDragAndDrop(filepaths, ComicBooks); 
+        _comicArchiveReaderService.LoadFromDragAndDrop(filepaths, ComicBooks); 
 
     }
     #endregion

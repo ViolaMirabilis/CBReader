@@ -10,7 +10,6 @@ public interface IComicBookService
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comicbook);
     public string GetComicBookCover(ComicBook comicbook);
     //public ComicBook GetComicBookData(string name, string archivePath, ObservableCollection<ComicBook> comicBooks);
-    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> ComicBooks);
-
+    public void AppendComicNameIfExists(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks);
 
 }

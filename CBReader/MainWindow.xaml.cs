@@ -29,18 +29,20 @@ namespace CBReader
     public partial class MainWindow : Window
     {
         private readonly IFileDialogService _fileDialogService;
-        
+        private readonly IComicArchiveReaderService _comicArchiveReaderService;
+
         // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view.
-        public MainWindow() : this(new FileDialogService())
+        public MainWindow() : this(new FileDialogService(), new ComicArchiveReaderService(new ComicBookService()))
         {
 
         }
         
-        public MainWindow(IFileDialogService fileDialogService)
+        public MainWindow(IFileDialogService fileDialogService, IComicArchiveReaderService comicArchiveReaderService)
         {
             InitializeComponent();
             _fileDialogService = fileDialogService;
-            DataContext = new MainWindowViewModel(_fileDialogService);
+            _comicArchiveReaderService = comicArchiveReaderService;
+            DataContext = new MainWindowViewModel(_fileDialogService, _comicArchiveReaderService);
         }
 
         // integrated with MainWindowViewModel

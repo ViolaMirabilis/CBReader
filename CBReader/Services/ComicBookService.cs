@@ -127,25 +127,6 @@ public class ComicBookService : IComicBookService
         return string.Empty;
 
     }
-    public ComicBook GetComicBookData(string name, string archivePath, ObservableCollection<ComicBook> comicBooks)
-    {
-
-        if (comicBooks.Any(c => c.Title == name))       // if a name exists, add 1
-        {
-            int counter = 1;
-            string newName;
-            do
-            {
-                // do some tinkering here, so it's always Book (1), Book (2), etc. and not Book (1) (2)
-                newName = $"{name} ({counter})";     // e.g. TWD (1);
-                name = newName;
-                counter++;
-            } while (comicBooks.Any(c => c.Title == name));     // infinite loop
-
-        }
-        
-        return new ComicBook(name, archivePath);
-    }
 
     public void AppendComicNameIfExists(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks)
     {
@@ -164,44 +145,6 @@ public class ComicBookService : IComicBookService
 
             comicBook.Title = newName;
         }
-    }
-
-    public void LoadComicsBase(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
-    {
-        foreach (var file in filepaths)
-        {
-            string filename = Path.GetFileNameWithoutExtension(file);
-            string extension = Path.GetExtension(file).ToLower();
-            string archivePath = file;      // file is a path already
-
-            switch (extension)
-            {
-                case ".cbr":
-                case ".cbz":
-                case ".rar":
-                case ".zip":
-                case ".7z":
-                    var newComicBook = GetComicBookData(filename, archivePath, comicBooks);       // Gets name and the path. Returns a comic book.
-                    AppendComicNameIfExists(newComicBook, comicBooks);
-                    GetComicBookCover(newComicBook);  // creates and saves the cover + path
-                    comicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
-                    break;
-                default:
-                    MessageBox.Show("Unsupported file!");   // shouldn't be here, just temporary.
-                    break;
-            }
-        }
-    }
-    
-    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
-    {
-        string[] comics = Directory.GetFiles(folderPath);
-        LoadComicsBase(comics, comicBooks);
-    }
-
-    public void LoadComicsFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
-    {
-        LoadComicsBase(filepaths, comicBooks);
     }
     public void LoadCoverFromFolder(string coverPath)
     {
