@@ -36,7 +36,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
     public string? ComicBookFolderPath { get; set; }
 
-
     #region Commands declarations
     public ICommand SelectFolderCommand { get; set; }
     public ICommand ShowComicBookCommand { get; set; }
@@ -116,7 +115,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public void OnFileDrop(string[] filepaths)      // filepaths needed because of the Helper class.
     {
         _comicArchiveReaderService.LoadFromDragAndDrop(filepaths, ComicBooks); 
-
     }
     #endregion
 

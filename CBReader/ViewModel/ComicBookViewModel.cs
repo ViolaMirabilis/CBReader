@@ -121,7 +121,6 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     public BitmapImage CurrentPageView => _comicBookPages[CurrentPage];    // Holds a reference to the current page                           
     public BitmapImage? NextPageView => CurrentPage >= 0 ? _comicBookPages[CurrentPage + 1] : null;  // Holds a reference to previous page
-
     #endregion
 
 
@@ -243,7 +242,6 @@ public class ComicBookViewModel : INotifyPropertyChanged
         TotalPages = _comicBookPages.Count;
 
     }
-
     #endregion
 
     #region INotifyPropertyChanged
@@ -252,6 +250,5 @@ public class ComicBookViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));      // if property isn't null
     }
-
     #endregion
 }

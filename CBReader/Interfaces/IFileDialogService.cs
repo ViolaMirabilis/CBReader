@@ -4,5 +4,5 @@ public interface IFileDialogService
 {
     void OpenComicBookFromFile();
 
-    string ChooseComicFolderPath();
+    string? ChooseComicFolderPath();
 }
