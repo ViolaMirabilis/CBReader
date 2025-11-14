@@ -166,64 +166,42 @@ public class ComicBookService : IComicBookService
         }
     }
 
-    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
+    public void LoadComicsBase(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
     {
-        // NEEDS CLEANUP. There's repetition in the MAinWindowViewModel (FileDragAndDrop)!!!!!!!!
-        string[] comics = Directory.GetFiles(folderPath);
-        foreach (var file in comics)
+        foreach (var file in filepaths)
         {
             string filename = Path.GetFileNameWithoutExtension(file);
             string extension = Path.GetExtension(file).ToLower();
-            // move/copy from archivePath to ComicBook Library Path set by the user.
             string archivePath = file;      // file is a path already
 
             switch (extension)
             {
-                // all the basic extensions
                 case ".cbr":
                 case ".cbz":
                 case ".rar":
                 case ".zip":
                 case ".7z":
-                    // Get file name, path 
                     var newComicBook = GetComicBookData(filename, archivePath, comicBooks);       // Gets name and the path. Returns a comic book.
                     AppendComicNameIfExists(newComicBook, comicBooks);
                     GetComicBookCover(newComicBook);  // creates and saves the cover + path
                     comicBooks.Add(newComicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
                     break;
                 default:
-                    MessageBox.Show("Unsupported file!");
+                    MessageBox.Show("Unsupported file!");   // shouldn't be here, just temporary.
                     break;
             }
         }
     }
-
-    public void LoadComicsFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> ComicBooks)
+    
+    public void LoadComicsFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
     {
-        foreach (var file in filepaths)
-        {
-            string filename = Path.GetFileNameWithoutExtension(file);
-            string extension = Path.GetExtension(file).ToLower();
-            // move/copy from archivePath to ComicBook Library Path set by the user.
-            string archivePath = file;      // file is a path already
+        string[] comics = Directory.GetFiles(folderPath);
+        LoadComicsBase(comics, comicBooks);
+    }
 
-            switch (extension)
-            {
-                case ".cbr":
-                case ".cbz":
-                case ".rar":
-                case ".zip":
-                case ".7z":
-
-                    var comicBook = CreateComicBook(filename, archivePath);     // Creates a new comic book
-                    GetComicBookCover(comicBook);  // creates and saves the cover + path
-                    ComicBooks.Add(comicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
-                    break;
-                default:
-                    MessageBox.Show("Unsupported file!");
-                    break;
-            }
-        }
+    public void LoadComicsFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
+    {
+        LoadComicsBase(filepaths, comicBooks);
     }
     public void LoadCoverFromFolder(string coverPath)
     {

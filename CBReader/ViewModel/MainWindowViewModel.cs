@@ -113,12 +113,10 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     #endregion
 
     #region IFileDragDrop
-    public void OnFileDrop(string[] filepaths)
+    public void OnFileDrop(string[] filepaths)      // filepaths needed because of the Helper class.
     {
-        _comicBookService.LoadComicsFromDragAndDrop(filepaths, ComicBooks);
+        _comicBookService.LoadComicsFromDragAndDrop(filepaths, ComicBooks); 
 
-        OnPropertyChanged(nameof(ShowEmptyComicBookListLabel));
-        
     }
     #endregion
 
