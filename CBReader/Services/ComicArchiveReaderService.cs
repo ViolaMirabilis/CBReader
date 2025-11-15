@@ -93,12 +93,13 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
         return string.Empty;
     }
 
+    // moved to view model. Maybe re-do with ComicBook comic object as argument?
     public void LoadFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
     {
         string[] comics = Directory.GetFiles(folderPath);
         //LoadComicsBase(comics, comicBooks);
     }
-
+    // moved to view model
     public void LoadFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
     {
         //LoadComicsBase(filepaths, comicBooks);
