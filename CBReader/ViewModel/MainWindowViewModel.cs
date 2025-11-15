@@ -68,8 +68,8 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
             return;
 
         ComicBookFolderPath = folderPath;
-
-        _comicArchiveReaderService.LoadFromFolder(folderPath, ComicBooks);
+        string[] comics = Directory.GetFiles(folderPath);
+        LoadComicbookNameAndPath(comics);
     }
 
     private bool CanDragAndDrop(object obj)
@@ -111,10 +111,33 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     }
     #endregion
 
+    #region ViewModelLogic
+    private void LoadComicbookNameAndPath(string[] filepaths)
+    {
+        foreach (var file in filepaths)
+        {
+            var extension = Path.GetExtension(file).ToLower();      // exstensions are always lowercase
+            if (!_comicArchiveReaderService.IsExtensionSupported(extension))
+            {
+                MessageBox.Show("Unsupported format!");
+                continue;
+            }
+            var title = Path.GetFileNameWithoutExtension(file);
+            ComicBook comic = _comicBookService.CreateComicBook(title, file);     // "file" is file path
+
+            _comicBookService.AppendComicNameIfExists(comic, ComicBooks);
+
+            var cover = _comicArchiveReaderService.GetComicBookCover(comic);        // returns a path to the cover
+
+            ComicBooks.Add(comic);
+        }
+    }
+    #endregion
+
     #region IFileDragDrop
     public void OnFileDrop(string[] filepaths)      // filepaths needed because of the Helper class.
     {
-        _comicArchiveReaderService.LoadFromDragAndDrop(filepaths, ComicBooks); 
+        LoadComicbookNameAndPath(filepaths);
     }
     #endregion
 

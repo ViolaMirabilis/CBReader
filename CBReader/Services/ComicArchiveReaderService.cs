@@ -10,49 +10,106 @@ namespace CBReader.Services;
 
 public class ComicArchiveReaderService : IComicArchiveReaderService
 {
-    private readonly IComicBookService _comicBookService;
-    public ComicArchiveReaderService(IComicBookService comicBookService)
+    
+    public bool IsExtensionSupported(string extension)
     {
-        _comicBookService = comicBookService;
-    }
-    public void LoadComicsBase(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
-    {
-        foreach (var file in filepaths)
+        return extension switch
         {
-            string filename = Path.GetFileNameWithoutExtension(file);
-            string extension = Path.GetExtension(file).ToLower();
-            string archivePath = file;      // file is a path already
+            ".cbr" => true,
+            ".cba" => true,
+            ".cbz" => true,
+            ".rar" => true,
+            ".zip" => true,
+            ".7z" => true,
+            _ => false
+        };
+    }
 
-            switch (extension)
+    public string GetComicBookCover(ComicBook comic)       // Saves the first page as a .png
+    {
+        using (Stream stream = File.OpenRead(comic.ArchivePath))
+        using (var reader = ReaderFactory.Open(stream))
+        {
+            while (reader.MoveToNextEntry())        // Goes into the all the files in a folder
             {
-                case ".cbr":
-                case ".cbz":
-                case ".rar":
-                case ".zip":
-                case ".7z":
-                    var comicBook = _comicBookService.CreateComicBook(filename, archivePath);
-                    _comicBookService.AppendComicNameIfExists(comicBook, comicBooks);
-                    _comicBookService.GetComicBookCover(comicBook);  // creates and saves the cover + path
-                    comicBooks.Add(comicBook);       // adds a full comic to the list        // adding it to the memory takes some space.
-                    break;
-                default:
-                    MessageBox.Show("Unsupported file!");   // shouldn't be here, just temporary.
-                    break;
+                if (!reader.Entry.IsDirectory)      // If the file isn't a folder, it runs the code below.
+                {
+                    // CAN BE SIMPLIFIED LATER ON, AS IT HAS BEEN DONE WITH LAZY LOADING!!!!!!!!!!!!!!!!
+                    using (var entryStream = reader.OpenEntryStream())
+                    {
+                        byte[] data;        // placeholder to which the data is copied
+                        using (var ms = new MemoryStream())
+                        {
+                            entryStream.CopyTo(ms);
+                            data = ms.ToArray();        // here
+                        }
+
+                        var bitmap = new BitmapImage();     // new comic book cover
+                        using (var ms2 = new MemoryStream(data))
+                        {
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;        // Important
+                            bitmap.StreamSource = ms2;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+
+                        }
+
+                        string safeTitle = string.Join("_", comic.Title.Split(Path.GetInvalidFileNameChars()));     // if characters are in incorrect format, "_" is used instead.
+                        // directory for the covers/thumbnails
+                        string comicBookCoversPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thumbnails");
+                        if (!Directory.Exists(comicBookCoversPath))
+                        {
+                            Directory.CreateDirectory(comicBookCoversPath);
+                        }
+
+                        // full path to the folder + cover 
+                        string outputPath = Path.Combine(comicBookCoversPath, $"{safeTitle}_COVER.png");
+
+
+                        try
+                        {
+                            // make sure the image doesn't stay in memory
+                            using (var fileStream = new FileStream(outputPath, FileMode.Create))
+                            {
+                                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                                encoder.Save(fileStream);
+                            }
+
+                            comic.CoverPath = outputPath;       // assigns the path
+                            return outputPath;
+                        }
+                        catch (System.IO.IOException ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            break;
+                        }
+
+                    }
+                }
             }
         }
+        return string.Empty;
     }
 
     public void LoadFromFolder(string folderPath, ObservableCollection<ComicBook> comicBooks)
     {
         string[] comics = Directory.GetFiles(folderPath);
-        LoadComicsBase(comics, comicBooks);
+        //LoadComicsBase(comics, comicBooks);
     }
 
     public void LoadFromDragAndDrop(string[] filepaths, ObservableCollection<ComicBook> comicBooks)
     {
-        LoadComicsBase(filepaths, comicBooks);
+        //LoadComicsBase(filepaths, comicBooks);
     }
 
+    /// <summary>
+    /// Reads the content of the archive and stores names of the files (xyz.jpg, xyz1.png, etc.) and indexes to them.
+    /// A simple list, so it doesn't use much resources and can be passed further on to the lazy loading method.
+    /// </summary>
+    /// <param name="comic"></param>
+    /// <returns></returns>
     public List<ComicBookContent> GetComicBookArchiveContent(ComicBook comic)
     {
         var contentList = new List<ComicBookContent>();
@@ -68,7 +125,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                     contentList.Add(new ComicBookContent
                     {
                         FileName = reader.Entry.Key,        // reader.Entry.Key reads the name of the file
-                        Index = tmpIndex                    // self explanatory
+                        Index = contentList.Count                    // self explanatory
                     });
                 }
                 tmpIndex++;
@@ -101,9 +158,9 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                     {
                         // Cannot use StreamReader, as it reads raw bytes (not suitable for images)
                         // @See https://stackoverflow.com/questions/5346727/convert-memory-stream-to-bitmapimage
-                        byte[] data;        // The image data needs to be in an array first
+                        //byte[] data;        // The image data needs to be in an array first
                         entryStream.CopyTo(ms);
-                        //ms.Position = 0;  // commented for now, idk if it's necessary.
+                        ms.Position = 0;  // otherwise the position would be at the very end
 
 
                         /*using (var ms = new MemoryStream())
@@ -118,12 +175,13 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                         bitmap.CacheOption = BitmapCacheOption.OnLoad;        // Important
                         bitmap.StreamSource = ms;
                         bitmap.EndInit();
-                        bitmap.Freeze();
+                        bitmap.Freeze();        // Important as well
                         return bitmap;
 
                         //comicBookPages.Add(bitmap);     // Adds the converted bytes to the list of Bitmaps
                     }
                 }
+                tmpIndex++;
             }
         }
         return null;

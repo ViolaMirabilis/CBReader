@@ -8,7 +8,6 @@ public interface IComicBookService
 {
     public ComicBook CreateComicBook(string name, string archivePath);
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comicbook);
-    public string GetComicBookCover(ComicBook comicbook);
     public void AppendComicNameIfExists(ComicBook comicBook, ObservableCollection<ComicBook> comicBooks);
 
 }
