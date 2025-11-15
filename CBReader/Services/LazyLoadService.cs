@@ -30,9 +30,15 @@ public class LazyLoadService
         image = _archiveReader.LoadPage(_comic, pageIndex);     // Loads the image into memory
         _loadedPages[pageIndex] = image;                        // page index and the image are in one dictionary now
 
+        UnloadPagesFromMemory(pageIndex);
+
         return image;
     }
 
+    /// <summary>
+    /// removes REFERENCE to the dictionary. If there is no reference, it's picked up by the garbage collector, so no memory leaks.
+    /// </summary>
+    /// <param name="currentPageIndex"></param>
     public void UnloadPagesFromMemory(int currentPageIndex)
     {
         int half = _currentlyLoadedPages / 2;       // 6/2 = 3

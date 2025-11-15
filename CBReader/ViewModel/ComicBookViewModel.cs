@@ -164,6 +164,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
         GoPreviousPageCommand = new RelayCommand(GoPreviousPage, CanGoPreviousPage);
         OnePageViewCommand = new RelayCommand(SetOnePageView);
         TwoPageViewCommand = new RelayCommand(SetTwoPageView);
+
     }
 
 
@@ -209,10 +210,11 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     private bool CanGoNextPage(object obj)
     {
-        if (IsDoublePage)
+        return true;
+        /*if (IsDoublePage)
             return CurrentPageIndex < _totalPages - 2;   // so the last two pages are visible at the end.
         else
-            return CurrentPageIndex < _totalPages - 1;
+            return CurrentPageIndex < _totalPages - 1;*/
     }
 
     private void GoNextPage(object obj)
@@ -257,6 +259,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
         _lazyLoad = new LazyLoadService(_comic, _contentFromArchive, _comicArchiveReaderService);
 
         CurrentPageIndex = 0;
+        TotalPages = _contentFromArchive.Count;
     }
 
     public void RefreshPageViews()
