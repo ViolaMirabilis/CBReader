@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace CBReader.Converters;
 
-public class FavouriteConverter : IValueConverter
+public class FavouriteVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

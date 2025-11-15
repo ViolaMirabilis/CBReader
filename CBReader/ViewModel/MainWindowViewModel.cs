@@ -16,8 +16,8 @@ namespace CBReader.ViewModel;
 
 public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
-    private readonly IFileDialogService _fileDialogService;
-    private readonly IComicArchiveReaderService _comicArchiveReaderService;
+    private readonly FileDialogService _fileDialogService;
+    private readonly ComicArchiveReaderService _comicArchiveReaderService;
     private readonly ComicBookService _comicBookService = new ComicBookService();       // Created only once
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
     private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
@@ -42,7 +42,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public ICommand HandleDragAndDrop { get; set; }
     #endregion
 
-    public MainWindowViewModel(IFileDialogService fileDialogService, IComicArchiveReaderService comicArchiveReaderService)
+    public MainWindowViewModel(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService)
     {
         _fileDialogService = fileDialogService;
         _comicArchiveReaderService = comicArchiveReaderService;

@@ -28,8 +28,8 @@ namespace CBReader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IFileDialogService _fileDialogService;
-        private readonly IComicArchiveReaderService _comicArchiveReaderService;
+        private readonly FileDialogService _fileDialogService;
+        private readonly ComicArchiveReaderService _comicArchiveReaderService;
 
         // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view
         public MainWindow() : this(new FileDialogService(), new ComicArchiveReaderService(new ComicBookService()))
@@ -37,7 +37,7 @@ namespace CBReader
 
         }
         
-        public MainWindow(IFileDialogService fileDialogService, IComicArchiveReaderService comicArchiveReaderService)
+        public MainWindow(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService)
         {
             InitializeComponent();
             _fileDialogService = fileDialogService;

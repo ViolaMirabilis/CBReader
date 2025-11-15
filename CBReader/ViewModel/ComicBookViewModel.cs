@@ -24,8 +24,7 @@ public class ComicBookViewModel : INotifyPropertyChanged
         get { return _comicBookPages;}
     }
     private readonly DispatcherTimer _mouseHoverDelay;
-    private const double _zoomMultiplier = 0.10;
-
+    private const double _zoomMultiplier = 0.05;
 
     #region Binding Properties
     private const double _maxZoomOut = 0.01;
@@ -252,3 +251,4 @@ public class ComicBookViewModel : INotifyPropertyChanged
     }
     #endregion
 }
+ 

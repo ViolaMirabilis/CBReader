@@ -10,13 +10,13 @@
 
     <!-- Handles the header of "add to favourites" or "remove form favourites" at runtime -->
     <UserControl.Resources>
-        <converters:FavouriteConverter x:Key="FavouriteConverter"/>
+        <converters:FavouriteVisibilityConverter x:Key="FavouriteVisibilityConverter"/>
     </UserControl.Resources>
 
     <!-- context menu for each comic book -->
     <UserControl.ContextMenu>
         <ContextMenu Closed="ContextMenu_Closed">
-            <MenuItem x:Name="FavouriteButton" Header="{Binding IsFavourite, Converter={StaticResource FavouriteConverter}}"
+            <MenuItem x:Name="FavouriteButton" Header="{Binding IsFavourite, Converter={StaticResource FavouriteVisibilityConverter}}"
                       Click="MenuItem_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
