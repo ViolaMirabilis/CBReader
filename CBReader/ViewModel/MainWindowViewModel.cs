@@ -17,6 +17,7 @@ namespace CBReader.ViewModel;
 public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
     private readonly FileDialogService _fileDialogService;
+    private readonly LazyLoadService _lazyLoadService;
     private readonly ComicArchiveReaderService _comicArchiveReaderService;
     private readonly ComicBookService _comicBookService = new ComicBookService();       // Created only once
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
@@ -98,8 +99,9 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     {
         if (obj is ComicBook comic)
         {
-            var vm = new ComicBookViewModel(_comicBookService);     // creates a new comic book service. Might assign the field in the constructor, just like the FileDialogService.
-            vm.LoadComicBookFromArchiveToMemory(comic);
+            var vm = new ComicBookViewModel(_comicBookService, _comicArchiveReaderService);     // creates a new comic book service. Might assign the field in the constructor, just like the FileDialogService.
+            //vm.LoadComicBookFromArchiveToMemory(comic);
+            vm.LoadComic(comic);
 
             ComicBookView comicBookView = new ComicBookView
             {

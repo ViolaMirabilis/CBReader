@@ -15,14 +15,13 @@ namespace CBReader.ViewModel;
 
 public class ComicBookViewModel : INotifyPropertyChanged
 {
-
     // TO SET IMAGES = USE THE "SOURCE" IN SINGLE/DOUBLE PAGE VIEW IN THE VIEW@@@@
-    private readonly ComicBookService _comicBookService = new ComicBookService();
-    private List<BitmapImage> _comicBookPages = new List<BitmapImage>();        // Holds images in the memory, extracted from the comic book archive.
-    public IReadOnlyList<BitmapImage> ComicBookPages
-    {
-        get { return _comicBookPages;}
-    }
+    private readonly ComicBookService _comicBookService;
+    private readonly ComicArchiveReaderService _comicArchiveReaderService;
+    private List<ComicBookContent> _contentFromArchive;
+    private LazyLoadService _lazyLoad;
+    private ComicBook _comic;
+
     private readonly DispatcherTimer _mouseHoverDelay;
     private const double _zoomMultiplier = 0.05;
 
@@ -60,31 +59,45 @@ public class ComicBookViewModel : INotifyPropertyChanged
         }
     }
 
-    private int _currentPage = 0;
-    public int CurrentPage
+    private BitmapImage _currentImage;
+    public BitmapImage CurrentImage
     {
-        get { return _currentPage; }
+        get { return _currentImage; }
         set
         {
-            _currentPage = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(CurrentPage));
-            OnPropertyChanged(nameof(CurrentPageView));
-            OnPropertyChanged(nameof(NextPage));
-            OnPropertyChanged(nameof(NextPageView));
-        }
-    }
-    private int _nextPage;
-    public int NextPage
-    {
-        get { return _nextPage; }
-        set
-        {
-            _currentPage = value;
+            _currentImage = value;
             OnPropertyChanged();
         }
     }
-
+    private BitmapImage _previousImage;
+    public BitmapImage PreviousImage
+    {
+        get { return _previousImage; }
+        set
+        {
+            _previousImage = value;
+            OnPropertyChanged();
+        }
+    }
+    private BitmapImage _nextImage;
+    public BitmapImage NextImage
+    {
+        get { return _nextImage; }
+        set
+        {
+            _nextImage = value;
+            OnPropertyChanged();
+        }
+    }
+    public int _currentPageIndex;
+    public int CurrentPageIndex
+    {
+        get { return _currentPageIndex; }
+        set { _currentPageIndex = value;
+            OnPropertyChanged();
+            RefreshPageViews();
+        }
+    }
     private bool _isDoublePageView = false;
     public bool IsDoublePage
     {
@@ -118,8 +131,9 @@ public class ComicBookViewModel : INotifyPropertyChanged
         }
     }
 
-    public BitmapImage CurrentPageView => _comicBookPages[CurrentPage];    // Holds a reference to the current page                           
-    public BitmapImage? NextPageView => CurrentPage >= 0 ? _comicBookPages[CurrentPage + 1] : null;  // Holds a reference to previous page
+    public BitmapImage CurrentPageView => _lazyLoad.GetPage(CurrentPageIndex);    // Holds a reference to the current page                           
+    public BitmapImage? NextPageView => CurrentPageIndex + 1 < _contentFromArchive.Count ? _lazyLoad.GetPage(CurrentPageIndex + 1) : null;  // Holds a reference to previous page
+    public BitmapImage? PreviousPageView => CurrentPageIndex - 1 >= 0 ? _lazyLoad.GetPage(CurrentPageIndex - 1) : null;
     #endregion
 
 
@@ -135,9 +149,10 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
 
 
-    public ComicBookViewModel(ComicBookService service)
+    public ComicBookViewModel(ComicBookService service, ComicArchiveReaderService comicArchiveReaderService)
     {
         _comicBookService = service; // repsonsible for reading the comic book from the archive
+        _comicArchiveReaderService = comicArchiveReaderService;
 
         _mouseHoverDelay = new DispatcherTimer();                       // creates a new timer on initialisation
         _mouseHoverDelay.Interval = TimeSpan.FromMilliseconds(1000);     // sets the interval to 1000ms (1 sec)
@@ -166,60 +181,61 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     private bool CanGoPreviousPage(object obj)
     {
-        return CurrentPage > 0;
+        return CurrentPageIndex > 0;
     }
 
     private void GoPreviousPage(object obj)
     {
         if (IsDoublePage)
         {
-            if (CurrentPage - 2 >= 0)       // so we don't go below 0 (page one)
+            if (CurrentPageIndex - 2 >= 0)       // so we don't go below 0 (page one)
             {
-                CurrentPage -= 2;
+                CurrentPageIndex -= 2;
             }
             else
             {
-                CurrentPage = 0;
+                CurrentPageIndex = 0;
             }
         }
         else
         {
-            if (CurrentPage -1 >= 0)
+            if (CurrentPageIndex - 1 >= 0)
             {
-                CurrentPage -= 1;
+                CurrentPageIndex -= 1;
             }
         }
+        RefreshPageViews();
     }
 
     private bool CanGoNextPage(object obj)
     {
         if (IsDoublePage)
-            return CurrentPage < _totalPages - 2;   // so the last two pages are visible at the end.
+            return CurrentPageIndex < _totalPages - 2;   // so the last two pages are visible at the end.
         else
-            return CurrentPage < _totalPages - 1;
+            return CurrentPageIndex < _totalPages - 1;
     }
 
     private void GoNextPage(object obj)
     {
         if (IsDoublePage)       // double page view
         {
-            if (CurrentPage + 2 < TotalPages)       // if possible, skips two pages
+            if (CurrentPageIndex + 2 < TotalPages)       // if possible, skips two pages
             {
-                CurrentPage += 2;
+                CurrentPageIndex += 2;
             }
-            else if (CurrentPage + 1 < TotalPages)      // if not, skips one
+            else if (CurrentPageIndex + 1 < TotalPages)      // if not, skips one
             {
-                CurrentPage += 1;
+                CurrentPageIndex += 1;
             }        
         }
         else // single page view
         {
-            if (CurrentPage + 1 < TotalPages)
+            if (CurrentPageIndex + 1 < TotalPages)
             {
-                CurrentPage += 1;
+                CurrentPageIndex += 1;
             }
         }
-       
+        RefreshPageViews();
     }
 
     private void ZoomOut(object obj)
@@ -234,12 +250,20 @@ public class ComicBookViewModel : INotifyPropertyChanged
 
     #region Reading comic book from the archive --> in memory
     // Should be async with a "loading" animation
-    public void LoadComicBookFromArchiveToMemory(ComicBook comic)
+    public void LoadComic(ComicBook comic)
     {
-        _comicBookPages = _comicBookService.LoadComicBookToMemory(comic);       // utilises the service
-        OnPropertyChanged(nameof(ComicBookPages));
-        TotalPages = _comicBookPages.Count;
+        _comic = comic;
+        _contentFromArchive = _comicArchiveReaderService.GetComicBookArchiveContent(comic);
+        _lazyLoad = new LazyLoadService(_comic, _contentFromArchive, _comicArchiveReaderService);
 
+        CurrentPageIndex = 0;
+    }
+
+    public void RefreshPageViews()
+    {
+        OnPropertyChanged(nameof(CurrentPageView)); 
+        OnPropertyChanged(nameof(PreviousPageView)); 
+        OnPropertyChanged(nameof(NextPageView)); 
     }
     #endregion
 

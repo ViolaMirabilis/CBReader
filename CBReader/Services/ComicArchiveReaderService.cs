@@ -159,16 +159,8 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                     {
                         // Cannot use StreamReader, as it reads raw bytes (not suitable for images)
                         // @See https://stackoverflow.com/questions/5346727/convert-memory-stream-to-bitmapimage
-                        //byte[] data;        // The image data needs to be in an array first
                         entryStream.CopyTo(ms);
                         ms.Position = 0;  // otherwise the position would be at the very end
-
-
-                        /*using (var ms = new MemoryStream())
-                        {
-                            entryStream.CopyTo(ms);     // Reads from one stream, writes to another (ms)
-                            data = ms.ToArray();        // then the data array gets the memory stream
-                        }*/
 
                         // converting from bytes to bitmap
                         var bitmap = new BitmapImage();
@@ -179,7 +171,6 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                         bitmap.Freeze();        // Important as well
                         return bitmap;
 
-                        //comicBookPages.Add(bitmap);     // Adds the converted bytes to the list of Bitmaps
                     }
                 }
                 tmpIndex++;
