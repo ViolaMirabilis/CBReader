@@ -136,6 +136,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
         return contentList;
 
     }
+    // Loads a desired page into memory (only one at once)
     public BitmapImage LoadPage(ComicBook comic, int pageIndex)     // Loads one page only
     {
         // @See https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
@@ -152,6 +153,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
                     continue;
                 }
 
+                // assigns a bitmap image ONLY if the index matches (user asks for page 50, it iterates until it hits the same index, then loads the image into memory), otherwise - increase index until expected one is met.
                 if (tmpIndex == pageIndex)
                 {
                     using (var entryStream = reader.OpenEntryStream())

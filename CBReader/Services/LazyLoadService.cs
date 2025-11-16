@@ -21,14 +21,14 @@ public class LazyLoadService
 
     public BitmapImage GetPage(int pageIndex)
     {
-        if (pageIndex < 0 || pageIndex >= _pagesInArchive.Count)
+        if (pageIndex < 0 || pageIndex >= _pagesInArchive.Count)        // less than 0 or higher than .jpg count in the archive
             return null;
 
-        if (_loadedPages.TryGetValue(pageIndex, out BitmapImage image))     // if valid index, return the image
+        if (_loadedPages.TryGetValue(pageIndex, out BitmapImage image))     // if valid index, return the image (if between 0 and archive count)
             return image;
 
         image = _archiveReader.LoadPage(_comic, pageIndex);     // Loads the image into memory
-        _loadedPages[pageIndex] = image;                        // page index and the image are in one dictionary now
+        _loadedPages[pageIndex] = image;                        // FIRST ADDITION TO THE DICTIONARY. page index and the image are in one dictionary now
 
         UnloadPagesFromMemory(pageIndex);
 
