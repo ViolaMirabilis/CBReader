@@ -7,7 +7,7 @@ namespace CBReader.Services;
 
 public class FilePersistanceService
 {
-    public string LibraryFilePath { get; set; }
+    public string? LibraryFilePath { get; set; }
     public void InitialiseConfigFile()
     {
         if (!File.Exists("config.xml"))
@@ -24,7 +24,7 @@ public class FilePersistanceService
         }
         else
         {
-            LibraryFilePath = GetLibraryPath();     // if file exists, read into memory.
+            LibraryFilePath = ReadLibraryPathFromConfig();      // reads from the config once and sets the value of the property
         }
     }
 
@@ -56,6 +56,11 @@ public class FilePersistanceService
     }
 
     public string GetLibraryPath()
+    {
+        return LibraryFilePath ?? "";
+    }
+
+    public string ReadLibraryPathFromConfig()
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(@"config.xml");
