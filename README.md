@@ -11,9 +11,9 @@
 * opening comic books that scale well with the screen,
 * single or dual page view to simulate the real-life reading experience and images that require two pages to be open at once,
 * viewing comic books added to the "favourite" section,
-* coming back to the comic at the page you left off.
+* persistant library set from the folder of choice.
 ## To be done
-* persistance
-* marking the comic as "read" or "currently reading".
+* marking the comic as "read" or "currently reading",
+* coming back to the comic at the page you left off,
 ## Libraries
 * SharpCompress
