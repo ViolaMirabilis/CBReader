@@ -30,19 +30,25 @@ namespace CBReader
     {
         private readonly FileDialogService _fileDialogService;
         private readonly ComicArchiveReaderService _comicArchiveReaderService;
+        private readonly FilePersistanceService _filePersistanceService;
 
         // I dont understand this one. It's a placeholder for now, because MainWindow will hold a reference to a new view
-        public MainWindow() : this(new FileDialogService(), new ComicArchiveReaderService())
+        public MainWindow() : this(new FileDialogService(), new ComicArchiveReaderService(), new FilePersistanceService())
         {
 
         }
         
-        public MainWindow(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService)
+        public MainWindow(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService, FilePersistanceService filePersistanceService)
         {
             InitializeComponent();
             _fileDialogService = fileDialogService;
             _comicArchiveReaderService = comicArchiveReaderService;
-            DataContext = new MainWindowViewModel(_fileDialogService, _comicArchiveReaderService);
+            _filePersistanceService = filePersistanceService;
+            DataContext = new MainWindowViewModel(_fileDialogService, _comicArchiveReaderService, _filePersistanceService);
+
+            FilePersistanceService asd = new FilePersistanceService();
+            asd.InitialiseConfigFile();
+
         }
 
         // integrated with MainWindowViewModel
