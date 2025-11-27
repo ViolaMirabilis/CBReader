@@ -10,10 +10,10 @@
 * A repository with all the comic books listed in one view,
 * opening comic books that scale well with the screen,
 * single or dual page view to simulate the real-life reading experience and images that require two pages to be open at once,
-* viewing comic books added to the "favourite" section,
 * persistant library set from the folder of choice.
 ## To be done
 * marking the comic as "read" or "currently reading",
 * coming back to the comic at the page you left off,
+* viewing only the comic books added to the "favourite" section.
 ## Libraries
 * SharpCompress
