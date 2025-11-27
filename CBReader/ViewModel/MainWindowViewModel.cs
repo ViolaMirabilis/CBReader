@@ -74,10 +74,9 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
         if (folderPath == null)
             return;
-
-        string path = _filePersistanceService.GetLibraryPath();
-        _filePersistanceService.SavePathToConfig(path);       // saves path to the config
-        ComicBookFolderPath = path;      // saves path to the local library
+;
+        _filePersistanceService.SavePathToConfig(folderPath);       // saves path to the config
+        ComicBookFolderPath = folderPath;      // saves path to the local library
         
         string[] comics = Directory.GetFiles(folderPath);
         LoadComicbookNameAndPath(comics);
@@ -147,7 +146,9 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
     private void InitialiseComicBookLoadOnStartup()
     {
-        ComicBookFolderPath = _filePersistanceService.GetLibraryPath();
+        ComicBookFolderPath = _filePersistanceService.GetLibraryPath();      // Reads the value ONCE on initialisation
+        if (ComicBookFolderPath == string.Empty)
+            return;
         string[] comics = Directory.GetFiles(ComicBookFolderPath);
         LoadComicbookNameAndPath(comics);
     }

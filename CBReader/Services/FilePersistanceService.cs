@@ -24,7 +24,7 @@ public class FilePersistanceService
         }
         else
         {
-            LibraryFilePath = ReadLibraryPathFromConfig();      // reads from the config once and sets the value of the property
+            LibraryFilePath = ReadLibraryPathFromConfig();      // reads from the config once and sets the property's value
         }
     }
 
