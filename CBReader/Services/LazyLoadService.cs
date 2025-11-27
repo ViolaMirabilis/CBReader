@@ -43,13 +43,12 @@ public class LazyLoadService
     {
         int half = _currentlyLoadedPages / 2;       // 6/2 = 3
 
-        int min = currentPageIndex - half;      // e.g. 5 - 3 = 2, so two pages to the left
-        int max = currentPageIndex + half;      // e.g. 5 + 3 = 8, 8 pages loaded in total
-        // min and max create a range = between 2 and 8, so pages: 2,3,4,5,6,7,8 can be loaded in at once.
+        int minIndex = currentPageIndex - half;      // e.g. index 120 - 3 = 117, so two pages to the left
+        int maxIndex = currentPageIndex + half;      // e.g. 120 + 3 = 123, so indexes 117 - 123 are fully loaded in memory
 
         foreach (var page in _loadedPages.Keys.ToList())        // Key is the PAGE INDEX
         {
-            if (page < min || page > max)
+            if (page < minIndex || page > maxIndex)
             {
                 _loadedPages.Remove(page);      // removes everything below min and above max
             }
