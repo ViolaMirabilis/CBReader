@@ -15,6 +15,7 @@ public class ComicBookService : IComicBookService
     {
         return new ComicBook(name, archivePath);
     }
+    // loads teh entire comic book to memory. Obsolete now, uses too much memory, so it's actually loaded in the LazyLoadService, loading x pages at once, to reduce memory usage.
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comic)
     {
         List<BitmapImage> comicBookPages = new List<BitmapImage>();
@@ -25,13 +26,13 @@ public class ComicBookService : IComicBookService
         {
             while (reader.MoveToNextEntry())        // Goes into the all the files
             {
-                if (!reader.Entry.IsDirectory)      // If the file isn't a folder, it runs the code below.
+                if (!reader.Entry.IsDirectory)      // If the file isn't a folder(dir), it saves the file (bitmap) to a stream
                 {
                     using (var entryStream = reader.OpenEntryStream())
                     {
                         // Cannot use StreamReader, as it reads raw bytes (not suitable for images)
                         // @See https://stackoverflow.com/questions/5346727/convert-memory-stream-to-bitmapimage
-                        byte[] data;        // The image data needs to be in an array first
+                        byte[] data;        // The image data needs to be in an array of bytes first
                         using (var ms = new MemoryStream())
                         {
                             entryStream.CopyTo(ms);     // Reads from one stream, writes to another (ms)

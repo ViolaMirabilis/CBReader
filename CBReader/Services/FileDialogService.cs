@@ -14,7 +14,7 @@ public class FileDialogService : IFileDialogService
 
         if (result == true)
         {
-            return dialog.FolderName;       // holds full path to the folder
+            return dialog.FolderName;       // returns full path to the folder
         }
         return null;
     }

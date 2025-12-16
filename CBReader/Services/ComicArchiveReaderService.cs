@@ -55,6 +55,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
 
                         }
 
+                        // Make a method out of it
                         string safeTitle = string.Join("_", comic.Title.Split(Path.GetInvalidFileNameChars()));     // if characters are in incorrect format, "_" is used instead.
                         // directory for the covers/thumbnails
                         string comicBookCoversPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Thumbnails");
@@ -106,7 +107,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
     }
 
     /// <summary>
-    /// Reads the content of the archive and stores names of the files (xyz.jpg, xyz1.png, etc.) and indexes to them.
+    /// Reads the content of the archive, stores names of the files (xyz.jpg, xyz1.png, etc.) and indexes to them.
     /// A simple list, so it doesn't use much resources and can be passed further on to the lazy loading method.
     /// </summary>
     /// <param name="comic"></param>
