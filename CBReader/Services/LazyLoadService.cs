@@ -10,7 +10,7 @@ public class LazyLoadService
     private readonly Dictionary<int, BitmapImage> _loadedPages = new Dictionary<int, BitmapImage>();         // BitmapImage - currently loaded image, int = its index.
     private readonly ComicArchiveReaderService _archiveReader = new ComicArchiveReaderService();
     
-    private int _currentlyLoadedPages = 6;      // 6 at the start, can be less if the user is going to the last page 
+    private int _currentlyLoadedPages = 6;      // 6 at the start, can be less if the user is going to the last page. Might consider this to be a setting, in order to reduce memory usage for certain users.
 
     public LazyLoadService(ComicBook comic, List<ComicBookContent> pagesInArchive, ComicArchiveReaderService archiveReader)
     {
@@ -19,12 +19,12 @@ public class LazyLoadService
         _archiveReader = archiveReader;
     }
 
-    public BitmapImage GetPage(int pageIndex)
+    public BitmapImage? GetPage(int pageIndex)
     {
-        if (pageIndex < 0 || pageIndex >= _pagesInArchive.Count)        // less than 0 or higher than .jpg count in the archive
+        if (pageIndex < 0 || pageIndex >= _pagesInArchive.Count)        // less than 0 or higher than .jpg (or other formats) count in the archive
             return null;
 
-        if (_loadedPages.TryGetValue(pageIndex, out BitmapImage image))     // if valid index, return the image (if between 0 and archive count)
+        if (_loadedPages.TryGetValue(pageIndex, out BitmapImage? image))     // if valid index, return the image (if between 0 and archive count)
             return image;
 
         image = _archiveReader.LoadPage(_comic, pageIndex);     // Loads the image into memory
@@ -36,7 +36,7 @@ public class LazyLoadService
     }
 
     /// <summary>
-    /// removes REFERENCE to the dictionary. If there is no reference, it's picked up by the garbage collector, so no memory leaks.
+    /// removes REFERENCE to the dictionary. If there is no reference, it's picked up by the garbage collector = no memory leaks.
     /// </summary>
     /// <param name="currentPageIndex"></param>
     public void UnloadPagesFromMemory(int currentPageIndex)
