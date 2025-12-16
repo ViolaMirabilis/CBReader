@@ -15,7 +15,12 @@ public class ComicBookService : IComicBookService
     {
         return new ComicBook(name, archivePath);
     }
-    // loads teh entire comic book to memory. Obsolete now, uses too much memory, so it's actually loaded in the LazyLoadService, loading x pages at once, to reduce memory usage.
+
+    /// <summary>
+    /// OBSOLETE. Loads the ENTIRE comic book into memory.
+    /// </summary>
+    /// <param name="comic"></param>
+    /// <returns></returns>
     public List<BitmapImage> LoadComicBookToMemory(ComicBook comic)
     {
         List<BitmapImage> comicBookPages = new List<BitmapImage>();
