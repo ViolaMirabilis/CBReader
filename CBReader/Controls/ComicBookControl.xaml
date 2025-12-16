@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CBReader.Controls"
              xmlns:converters="clr-namespace:CBReader.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="150">
+             d:DesignHeight="200" d:DesignWidth="300">
 
     <!-- Handles the header of "add to favourites" or "remove form favourites" at runtime -->
     <UserControl.Resources>
@@ -21,13 +21,19 @@
         </ContextMenu>
     </UserControl.ContextMenu>
 
-    <Grid Height="200" Width="150">
+    <Grid Height="200" Width="300">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition   Width="6*"/>
+        </Grid.ColumnDefinitions>
+
         <!-- layer 0, so the image is above everything else-->
 
-        <Image Height="128"
+        <Image Grid.Column="0"
+           Height="128"
            Width="91"
-           Margin="2"
            Source="{Binding CoverPath}"
+           Margin="0"
            RenderOptions.BitmapScalingMode="HighQuality"
            RenderOptions.EdgeMode="Aliased">
             <Image.RenderTransform>
@@ -70,26 +76,31 @@
             </Image.Style>
         </Image>
 
-        <TextBlock Text="{Binding Title}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Margin="2" FontSize="10"
-            FontFamily="Bahnschrift"
-            FontWeight="Bold"
-            TextWrapping="WrapWithOverflow"
-            TextAlignment="Center">
-        </TextBlock>
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="{Binding Title, StringFormat=Title: {0}}"
+                Margin="15,36,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="16"
+                FontFamily="Arial"
+                FontWeight="Regular"
+                TextWrapping="WrapWithOverflow"
+                TextAlignment="Center">
+            </TextBlock>
 
 
-        <Image x:Name="imgFavourite"
-            Height="24"
-            Width="24"
-            Margin="0,0,35,40"
-            Source="C:\Users\zajac\Desktop\CBReader\CBReader\Assets\star.png"
-            RenderOptions.BitmapScalingMode="HighQuality"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Visibility="{Binding IsFavourite, Converter={StaticResource BoolToVis}}"/>
+            <Image x:Name="imgFavourite"
+                Height="24"
+                Width="24"
+                Margin="0,0,19,40"
+                Source="C:\Users\zajac\Desktop\CBReader\CBReader\Assets\star.png"
+                RenderOptions.BitmapScalingMode="HighQuality"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Visibility="{Binding IsFavourite, Converter={StaticResource BoolToVis}}"/>
+        </StackPanel>
+        
+
 
     </Grid>
 

@@ -146,9 +146,6 @@ public class ComicBookViewModel : INotifyPropertyChanged
     public ICommand TwoPageViewCommand { get; set; }
     #endregion
 
-
-
-
     public ComicBookViewModel(ComicBookService service, ComicArchiveReaderService comicArchiveReaderService)
     {
         _comicBookService = service; // repsonsible for reading the comic book from the archive
@@ -168,7 +165,8 @@ public class ComicBookViewModel : INotifyPropertyChanged
     }
 
 
-    #region Timer Tick
+    #region Timer Tick'
+    // every 1000ms it sets the UI to invisible; unless the cursor is moving.
     private void MouseHoverDelay_Tick(object? sender, EventArgs e)
     {
         _mouseHoverDelay.Stop();        // Stops the timer

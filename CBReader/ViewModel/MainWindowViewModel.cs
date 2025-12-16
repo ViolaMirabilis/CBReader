@@ -63,7 +63,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         ShowComicBookCommand = new RelayCommand(OpenComicBook, CanOpenComicBook);
         HandleDragAndDrop = new RelayCommand(DragAndDrop, CanDragAndDrop);
         SelectFolderCommand = new RelayCommand(OpenFolder);
-       
     }
 
 
@@ -94,10 +93,12 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         throw new NotImplementedException();
     }
 
+    // not needed?
     private void DragAndDrop(object obj)
     {
         throw new NotImplementedException();
     }
+    // noed needed?
     private bool CanOpenComicBook(object obj)
     {
         return obj is ComicBook;
