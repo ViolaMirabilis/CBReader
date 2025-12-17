@@ -6,10 +6,11 @@ namespace CBReader.Model;
 
 public class ComicBook : INotifyPropertyChanged
 {
-    public string Title { get; set; } = "Name not found";
-    public int LastReadPage { get; set; } = 0;      // JSON?
+    public int Id { get; }
+    public string Title { get; set; } = "N/A";
+    public int LastReadPage { get; set; } = 0;      // JSON? move it to a separate class
     // Making it bindable, so the UI is notified once the "favourite" property changes.
-    private bool _isFavourite = false;
+    private bool _isFavourite = false;      // move to separate class too
     public bool IsFavourite
     {
         get { return _isFavourite; }
