@@ -108,7 +108,7 @@
 
             
             <TextBlock Text="{Binding State.LastReadPage, StringFormat=Last read page: {0}}"
-                Margin="15,18,0,0"
+                Margin="15,15,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 FontSize="12"
@@ -121,7 +121,7 @@
             <TextBlock Text="{Binding State.Status,
                 Converter={StaticResource StatusEnumToStringConverter},
                 StringFormat=Status: {0}}"
-                    Margin="15,18,0,0"
+                    Margin="15,15,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     FontSize="12"
@@ -134,7 +134,7 @@
             <Image x:Name="imgFavourite"
                 Height="24"
                 Width="24"
-                Margin="15,18,0,0"
+                Margin="15,15,0,0"
                 Source="C:\Users\zajac\Desktop\CBReader\CBReader\Assets\star.png"
                 RenderOptions.BitmapScalingMode="HighQuality"
                 HorizontalAlignment="Left"
