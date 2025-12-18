@@ -18,9 +18,8 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 {
     private readonly ComicBookService _comicBookService = new ComicBookService();       // Created only once
     private readonly FileDialogService _fileDialogService;
-    private readonly LazyLoadService _lazyLoadService;
     private readonly ComicArchiveReaderService _comicArchiveReaderService;
-    private readonly FilePersistanceService _filePersistanceService;
+    private readonly ConfigurationService _configurationService;
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
     private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
     public bool ShowEmptyComicBookListLabel
@@ -44,11 +43,11 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     public ICommand HandleDragAndDrop { get; set; }
     #endregion
 
-    public MainWindowViewModel(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService, FilePersistanceService filePersistanceService)
+    public MainWindowViewModel(FileDialogService fileDialogService, ComicArchiveReaderService comicArchiveReaderService, ConfigurationService configurationService)
     {
         _fileDialogService = fileDialogService;
         _comicArchiveReaderService = comicArchiveReaderService;
-        _filePersistanceService = filePersistanceService;
+        _configurationService = configurationService;
         
         // An event, which sets the value to true if the ComicBooks.Count is equal to 0. Lambda expression btw, shorter version.
         ComicBooks.CollectionChanged += (s, e) =>
@@ -57,7 +56,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         };
 
         // initialises the config file
-        _filePersistanceService.InitialiseConfigFile();
+        _configurationService.InitialiseConfigFile();
         InitialiseComicBookLoadOnStartup();
 
         ShowComicBookCommand = new RelayCommand(OpenComicBook, CanOpenComicBook);
@@ -74,7 +73,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
         if (folderPath == null)
             return;
 ;
-        _filePersistanceService.SavePathToConfig(folderPath);       // saves path to the config
+        _configurationService.SavePathToConfig(folderPath);       // saves path to the config
         ComicBookFolderPath = folderPath;      // saves path to the local library
         
         string[] comics = Directory.GetFiles(folderPath);
@@ -147,7 +146,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
 
     private void InitialiseComicBookLoadOnStartup()
     {
-        ComicBookFolderPath = _filePersistanceService.GetLibraryPath();      // Reads the value ONCE on initialisation
+        ComicBookFolderPath = _configurationService.GetLibraryPath();      // Reads the value ONCE on initialisation
         if (ComicBookFolderPath == string.Empty)
             return;
         string[] comics = Directory.GetFiles(ComicBookFolderPath);

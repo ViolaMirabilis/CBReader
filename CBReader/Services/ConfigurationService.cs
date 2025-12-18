@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace CBReader.Services;
 
-public class FilePersistanceService
+public class ConfigurationService
 {
     public string? LibraryFilePath { get; set; }
     public void InitialiseConfigFile()

@@ -31,5 +31,5 @@ public class ComicBook : INotifyPropertyChanged
 
     // used more than once - I should make a ViewModelBase and separate view and view models.
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); 
 }

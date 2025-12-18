@@ -12,20 +12,22 @@
     <UserControl.Resources>
         <converters:FavouriteVisibilityConverter x:Key="FavouriteVisibilityConverter"/>
     </UserControl.Resources>
-
-    <!-- context menu for each comic book -->
+    
     <UserControl.ContextMenu>
         <ContextMenu Closed="ContextMenu_Closed">
             <MenuItem x:Name="FavouriteButton" Header="{Binding IsFavourite, Converter={StaticResource FavouriteVisibilityConverter}}"
-                      Click="MenuItem_Click"/>
+                  Click="MenuItem_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
-
-    <Grid Height="200" Width="300">
+    
+    <!-- context menu for each comic book -->
+    <Grid Height="200" Width="300" Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition   Width="6*"/>
         </Grid.ColumnDefinitions>
+        
+        
 
         <!-- layer 0, so the image is above everything else-->
 

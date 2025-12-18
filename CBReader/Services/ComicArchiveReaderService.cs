@@ -138,7 +138,7 @@ public class ComicArchiveReaderService : IComicArchiveReaderService
 
     }
     // Loads a desired page into memory (only one at once)
-    public BitmapImage LoadPage(ComicBook comic, int pageIndex)     // Loads one page only
+    public BitmapImage? LoadPage(ComicBook comic, int pageIndex)     // Loads one page only
     {
         // @See https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
         using (Stream stream = File.OpenRead(comic.ArchivePath))
