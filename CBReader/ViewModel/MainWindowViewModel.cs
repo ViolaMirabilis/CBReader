@@ -21,6 +21,7 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
     private readonly ComicArchiveReaderService _comicArchiveReaderService;
     private readonly ConfigurationService _configurationService;
     public ObservableCollection<ComicBook> ComicBooks { get; } = new ObservableCollection<ComicBook>();     // list of ComicBook Controls
+
     private bool _showEmptyComicBookListLabel = true;  // Initially true. However, if the ComicBook.Count != 0, it switches to false.
     public bool ShowEmptyComicBookListLabel
     {
