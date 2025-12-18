@@ -16,7 +16,6 @@ public class FilePersistanceService
             XmlDocument doc = new XmlDocument();
             doc.Load(@"config.xml");    // loads it
 
-
             XmlNode path = doc.SelectSingleNode("configuration/path");
             path.InnerText = "";
             doc.Save(@"config.xml");

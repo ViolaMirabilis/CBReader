@@ -5,7 +5,7 @@ namespace CBReader.Model;
 
 public class ComicBookState : INotifyPropertyChanged
 {
-    public string ComicId { get; set; }
+    public required Guid ComicId { get; set; }
     private int _lastReadPage;
 
     // custom Set, the value has to be changed in the "Library" view immediately.
