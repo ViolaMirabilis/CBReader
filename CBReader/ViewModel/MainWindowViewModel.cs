@@ -140,7 +140,6 @@ public class MainWindowViewModel : INotifyPropertyChanged, IFileDragDropTarget
             _comicBookService.AppendComicNameIfExists(comic, ComicBooks);
 
             var cover = _comicArchiveReaderService.GetComicBookCover(comic);        // returns a path to the cover
-
             ComicBooks.Add(comic);
         }
     }

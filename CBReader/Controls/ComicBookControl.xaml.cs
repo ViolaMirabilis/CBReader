@@ -21,7 +21,9 @@ namespace CBReader.Controls
     /// </summary>
     public partial class ComicBookControl : UserControl
     {
+        
         private bool _toggleTextDelay = false;
+        public bool IsEditing = false;
         public ComicBookControl()
         {
             InitializeComponent();
@@ -30,7 +32,6 @@ namespace CBReader.Controls
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             _toggleTextDelay = true;
-            
         }
 
         // when the context menu CLOSES, do this.
@@ -39,12 +40,25 @@ namespace CBReader.Controls
             // MenuItem makes _toggle TRUE. Then, when the context menu is closed, it checks if it's true. If it is, it changes the text.
             if (_toggleTextDelay && DataContext is ComicBook comicBook)
             {
-                comicBook.IsFavourite = !comicBook.IsFavourite;
+                comicBook.State.IsFavourite = !comicBook.State.IsFavourite;
 
-                FavouriteButton.Header = comicBook.IsFavourite ? "Remove from favourites" : "Add to favourites";
+                FavouriteButton.Header = comicBook.State.IsFavourite ? "Remove from favourites" : "Add to favourites";
             }
 
             _toggleTextDelay = false;
+        }
+
+        private void Rename_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ComicBook comicBook)
+            {
+                IsEditing = true;
+            }
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+
         }
     }
 }

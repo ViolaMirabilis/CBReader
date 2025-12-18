@@ -3,23 +3,21 @@ using System.Runtime.CompilerServices;
 
 namespace CBReader.Model;
 
+public enum Status {
+    [Description("Not started")]
+    NotStarted,
+
+    [Description("In Progress")]
+    InProgress,
+
+    Finished}
 public class ComicBookState : INotifyPropertyChanged
 {
-    public required Guid ComicId { get; set; }
-    private int _lastReadPage;
+    public Status Status { get; set; } = Status.NotStarted;
+    public DateTime? LastRead { get; set; }
 
-    // custom Set, the value has to be changed in the "Library" view immediately.
-    public int LastReadPage
-    {
-        get { return _lastReadPage; }
-        set
-        {
-            _lastReadPage = value;
-            OnPropertyChanged();
-        }
-    }
-    // custom Set, the value needs to change in the "Library" view immediately.
-    private bool _isFavourite;
+    // OnPropertyChanged, because it should notify the UI right away.
+    private bool _isFavourite = false;      // move to separate class too
     public bool IsFavourite
     {
         get { return _isFavourite; }
@@ -30,9 +28,19 @@ public class ComicBookState : INotifyPropertyChanged
         }
     }
 
-    public bool HasFinishedReading { get; set; }
-    public DateTime? LastRead { get; set; }
+    private int _lastReadPage;
+
+    // Notifies the UI right away.
+    public int LastReadPage
+    {
+        get { return _lastReadPage; }
+        set
+        {
+            _lastReadPage = value;
+            OnPropertyChanged();
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

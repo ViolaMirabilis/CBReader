@@ -11,12 +11,15 @@
     <!-- Handles the header of "add to favourites" or "remove form favourites" at runtime -->
     <UserControl.Resources>
         <converters:FavouriteVisibilityConverter x:Key="FavouriteVisibilityConverter"/>
+        <converters:StatusEnumToStringConverter x:Key="StatusEnumToStringConverter"/>
     </UserControl.Resources>
     
+    <!-- https://stackoverflow.com/questions/5020839/wpf-binding-with-placementtarget-and-relativesource -->
     <UserControl.ContextMenu>
         <ContextMenu Closed="ContextMenu_Closed">
-            <MenuItem x:Name="FavouriteButton" Header="{Binding IsFavourite, Converter={StaticResource FavouriteVisibilityConverter}}"
+            <MenuItem x:Name="FavouriteButton" Header="{Binding State.IsFavourite, Converter={StaticResource FavouriteVisibilityConverter}}"
                   Click="MenuItem_Click"/>
+            <MenuItem x:Name="Rename" Header="Rename" Click="Rename_Click"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     
@@ -79,27 +82,64 @@
         </Image>
 
         <StackPanel Grid.Column="1">
-            <TextBlock Text="{Binding Title, StringFormat=Title: {0}}"
+            <TextBlock Text="{Binding ShortenedTitle, StringFormat=Title: {0}}"
                 Margin="15,36,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                FontSize="16"
+                FontSize="12"
+                FontFamily="Arial"
+                FontWeight="Regular"
+                TextWrapping="Wrap"
+                TextAlignment="Left">
+            </TextBlock>
+
+            <TextBox BorderThickness="0"
+                    FontSize="12"
+                    FontFamily="Arial"
+                    FontWeight="Regular"
+                    TextWrapping="Wrap"
+                    TextAlignment="Left"
+                     Focusable="False"
+                     IsReadOnly="True"
+                     Visibility="Collapsed"
+                     >
+                
+            </TextBox>
+
+            
+            <TextBlock Text="{Binding State.LastReadPage, StringFormat=Last read page: {0}}"
+                Margin="15,18,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="12"
                 FontFamily="Arial"
                 FontWeight="Regular"
                 TextWrapping="WrapWithOverflow"
                 TextAlignment="Center">
             </TextBlock>
 
+            <TextBlock Text="{Binding State.Status,
+                Converter={StaticResource StatusEnumToStringConverter},
+                StringFormat=Status: {0}}"
+                    Margin="15,18,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    FontSize="12"
+                    FontFamily="Arial"
+                    FontWeight="Regular"
+                    TextWrapping="WrapWithOverflow"
+                    TextAlignment="Center">
+            </TextBlock>
 
             <Image x:Name="imgFavourite"
                 Height="24"
                 Width="24"
-                Margin="0,0,19,40"
+                Margin="15,18,0,0"
                 Source="C:\Users\zajac\Desktop\CBReader\CBReader\Assets\star.png"
                 RenderOptions.BitmapScalingMode="HighQuality"
-                HorizontalAlignment="Right"
+                HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Visibility="{Binding IsFavourite, Converter={StaticResource BoolToVis}}"/>
+                Visibility="{Binding State.IsFavourite, Converter={StaticResource BoolToVis}}"/>
         </StackPanel>
         
 
