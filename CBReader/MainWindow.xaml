@@ -8,6 +8,7 @@
         xmlns:converters="clr-namespace:CBReader.Converters"
         xmlns:behaviours="clr-namespace:CBReader.Helpers"
         mc:Ignorable="d"
+        Icon="/Assets/logo_ico.ico"
         Title="CBReader Library"
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"

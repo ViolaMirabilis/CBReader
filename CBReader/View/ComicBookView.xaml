@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:CBReader.View"
         xmlns:converters="clr-namespace:CBReader.Converters"
         mc:Ignorable="d"
+        Icon="/Assets/logo_ico.ico"
         Title="CBReader Viewer"
         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.75'}"
         Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={converters:ScreenResolutionConverter}, ConverterParameter='0.78'}"
